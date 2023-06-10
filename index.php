@@ -52,7 +52,7 @@
 		// echo $_SERVER['HTTP_USER_AGENT'];
 		?>
 
-		<form action="login.php" method="GET">
+		<form action="login.php" method="POST">
 			<div class="mb-3">
 				<label for="name" class="form-label">Name</label>
 				<input class="form-control" id="name" name="name" />

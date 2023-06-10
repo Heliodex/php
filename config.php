@@ -1,7 +1,7 @@
 <?php
-
 $CONFIG = [
+	"hostname" => "localhost",
 	"username" => "root",
 	"password" => "",
-	"ip" => "localhost",
+	"database" => "php"
 ];
