@@ -2,13 +2,7 @@
 require("database.php");
 
 $name = $_POST['name'];
-
-$query = $db->prepare("INSERT INTO phptab (name) VALUES (?)");
-$query->bind_param("s", $name);
-$query->execute();
-
-$query->close();
-$db->close();
+$result = mysqli_query($db, "INSERT INTO phptab (name) VALUES ('$name')");
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +22,13 @@ $db->close();
 	</nav>
 
 	<div class="container">
-		You are <?= htmlspecialchars($_POST['name']) ?>
+		You are
+		<?php echo htmlspecialchars($_POST['name']) ?>
+		<br />
+		result
+		<?php echo $result ?>
+		<br />
+		<a class="btn btn-primary" href="/table.php">table</a>
 	</div>
 
 </body>

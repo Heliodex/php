@@ -20,7 +20,7 @@
 		$arr = [7, 6, 4, "hlello", 5];
 
 		for ($i = 0; $i <= count($arr) - 1; $i++) {
-			echo $arr[$i];
+			echo $arr[$i] . ", ";
 		}
 
 		echo "<br />";
@@ -47,6 +47,7 @@
 
 
 			$j++;
+			echo "<br />";
 		} while ($j <= 5);
 
 		// echo $_SERVER['HTTP_USER_AGENT'];

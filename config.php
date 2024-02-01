@@ -2,6 +2,6 @@
 $CONFIG = [
 	"hostname" => "localhost",
 	"username" => "root",
-	"password" => "",
+	"password" => "root",
 	"database" => "php"
 ];

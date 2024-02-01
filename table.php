@@ -1,11 +1,7 @@
 <?php
 require("database.php");
 
-$query = $db->query("SELECT * FROM phptab");
-$result = $query->fetch_all(MYSQLI_ASSOC);
-$db->close();
-
-echo var_dump($result)
+$result = mysqli_query($db, "SELECT * FROM phptab");
 	?>
 
 <!DOCTYPE html>
@@ -23,46 +19,26 @@ echo var_dump($result)
 		</div>
 	</nav>
 	<div class="container">
-		<?php
-		$hi = "Var";
-
-		$arr = [1, 2, 3, 4, 5, 6, 7];
-
-		$arr1 = [
-			"hello" => "world",
-			"hi" => "lol"
-		];
-
-		$i = 1;
-
-		?>
-
 		<table class="table">
 			<thead>
 				<tr>
-					<th scope="col">#</th>
 					<th scope="col">Id</th>
 					<th scope="col">Name</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($result as $key => $value) { ?>
-				<tr>
-					<th scope="row">
-							<?= $key ?>
-					</th>
-					<th>
-							<?= $value["id"] ?>
-					</th>
-					<td>
-							<?= $value["name"] ?>
-					</td>
-				</tr>
+				<?php while ($row = mysqli_fetch_array($result)) { ?>
+					<tr>
+						<th>
+							<?php echo $row["id"] ?>
+						</th>
+						<td>
+							<?php echo $row["name"] ?>
+						</td>
+					</tr>
 				<?php } ?>
 			</tbody>
 		</table>
-
-
 	</div>
 </body>
 

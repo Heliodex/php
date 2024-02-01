@@ -2,7 +2,7 @@
 
 require("config.php");
 
-$db = new mysqli(
+$db = mysqli_connect(
 	$CONFIG["hostname"],
 	$CONFIG["username"],
 	$CONFIG["password"],
@@ -12,5 +12,3 @@ $db = new mysqli(
 if ($db->connect_error) {
 	die("connection failed " . $db->connect_error);
 }
-
-echo $db->host_info;
