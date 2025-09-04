@@ -1,8 +1,7 @@
 <?php
-require("database.php");
+require "database.php";
 
-$name = $_POST['name'];
-$result = mysqli_query($db, "INSERT INTO phptab (name) VALUES ('$name')");
+$result = mysqli_query($db, "SELECT * FROM phptab");
 ?>
 
 <!DOCTYPE html>
@@ -14,23 +13,33 @@ $result = mysqli_query($db, "INSERT INTO phptab (name) VALUES ('$name')");
 </head>
 
 <body data-bs-theme="dark">
-
 	<nav class="navbar bg-body-secondary">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="/">php.guide</a>
 		</div>
 	</nav>
-
 	<div class="container">
-		You are
-		<?php echo htmlspecialchars($_POST['name']) ?>
-		<br />
-		result
-		<?php echo $result ?>
-		<br />
-		<a class="btn btn-primary" href="/table.php">table</a>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Id</th>
+					<th scope="col">Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php while ($row = mysqli_fetch_array($result)) { ?>
+					<tr>
+						<th>
+							<?php echo $row["id"] ?>
+						</th>
+						<td>
+							<?php echo $row["name"] ?>
+						</td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
 	</div>
-
 </body>
 
 </html>

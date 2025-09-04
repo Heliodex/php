@@ -1,6 +1,5 @@
 <?php
-
-require("config.php");
+require "config.php";
 
 $db = mysqli_connect(
 	$CONFIG["hostname"],
@@ -9,6 +8,5 @@ $db = mysqli_connect(
 	$CONFIG["database"],
 );
 
-if ($db->connect_error) {
+if ($db->connect_error)
 	die("connection failed " . $db->connect_error);
-}

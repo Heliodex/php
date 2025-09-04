@@ -19,17 +19,15 @@
 		$hi = "Var";
 		$arr = [7, 6, 4, "hlello", 5];
 
-		for ($i = 0; $i <= count($arr) - 1; $i++) {
+		for ($i = 0; $i <= count($arr) - 1; $i++)
 			echo $arr[$i] . ", ";
-		}
 
 		echo "<br />";
 
 		$j = 0;
 		do {
 			echo $j;
-			
-			
+
 			switch ($j) {
 				case 0:
 					echo "zero";
