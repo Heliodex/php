@@ -6,8 +6,8 @@ $query = $DB->query("SELECT * FROM UsersAuto");
 
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 foreach ($rows as $row) {
-	foreach ($row as $key => $value) {
-		echo "<p>$key: $value</p>";
-	}
-	echo "<hr />";
+	echo "<ul>";
+	foreach ($row as $key => $value)
+		echo "<li>$key: $value</li>";
+	echo "</ul><hr>";
 }

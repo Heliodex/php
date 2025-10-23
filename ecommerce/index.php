@@ -15,6 +15,14 @@ if ($currentPath === "/")
 	$pageFile = __DIR__ . "/pages/index.php";
 
 if (!file_exists($pageFile)) {
+	// try to serve as a static file
+	$styleFile = __DIR__ . "/styles/$currentPath";
+	if (file_exists($styleFile)) {
+		header("Content-Type: text/css");
+		readfile($styleFile);
+		die();
+	}
+
 	$pageBuilder->err404();
 	$pageBuilder->render();
 	die(404);
