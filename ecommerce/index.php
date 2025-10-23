@@ -1,7 +1,7 @@
 <?php
 
-require_once "./lib/Site.php";
-require_once "./lib/page.php";
+require_once "lib/site.php";
+require_once "lib/page.php";
 
 $site = new Site("My E-commerce Site", "http://localhost:8000");
 $pageBuilder = new Page($site->name);
