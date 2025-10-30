@@ -9,8 +9,10 @@ class Rule // 34
 
 	private string $props = "";
 	private bool $required = false;
-	private ?int $minLength = null;
-	private ?int $maxLength = null;
+	private int $minlen = 0;
+	private ?int $maxlen = null;
+	private string $type = "text";
+	private bool $isEmail = false;
 
 	function __construct(string $name)
 	{
@@ -27,15 +29,21 @@ class Rule // 34
 
 	function minLength(int $minLength): self
 	{
-		$this->minLength = $minLength;
+		$this->minlen = $minLength;
 		$this->props .= " minLength=\"$minLength\"";
 		return $this;
 	}
 
 	function maxLength(int $maxLength): self
 	{
-		$this->maxLength = $maxLength;
+		$this->maxlen = $maxLength;
 		$this->props .= " maxLength=\"$maxLength\"";
+		return $this;
+	}
+
+	function email(): self
+	{
+		$this->isEmail = true;
 		return $this;
 	}
 
@@ -45,18 +53,20 @@ class Rule // 34
 
 		if ($this->required && empty($value))
 			return "{$this->name} is required";
-		if ($this->minLength !== null && strlen($value) < $this->minLength)
-			return "{$this->name} must be at least {$this->minLength} characters long";
-		if ($this->maxLength !== null && strlen($value) > $this->maxLength)
-			return "{$this->name} must be at most {$this->maxLength} characters long";
+		if (strlen($value) < $this->minlen)
+			return "{$this->name} must be at least {$this->minlen} characters long";
+		if ($this->maxlen !== null && strlen($value) > $this->maxlen)
+			return "{$this->name} must be at most {$this->maxlen} characters long";
+		if ($this->isEmail && !filter_var($value, FILTER_VALIDATE_EMAIL))
+			return "{$this->name} must be a valid email address";
 
 		return null;
 	}
 
-	function input(string $type = "text"): string
+	function input(): string
 	{
 		return "<label for=\"{$this->field}\">{$this->name}</label>"
-			. "<input type=\"$type\" id=\"{$this->field}\" name=\"{$this->field}\"{$this->props}>";
+			. "<input type=\"{$this->type}\" id=\"{$this->field}\" name=\"{$this->field}\"{$this->props}>";
 	}
 }
 
