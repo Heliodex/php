@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once "lib/site.php";
 require_once "lib/page.php";
 
@@ -9,20 +11,22 @@ $pageBuilder = new Page($site->name);
 // get current url path
 $currentPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-// get page from the pages directory
-$pageFile = __DIR__ . "/pages/$currentPath.php";
 if ($currentPath === "/")
-	$pageFile = __DIR__ . "/pages/index.php";
+	$currentPath = "/index";
 
-if (!file_exists($pageFile)) {
-	// try to serve as a static file
-	$styleFile = __DIR__ . "/styles/$currentPath";
-	if (file_exists($styleFile)) {
-		header("Content-Type: text/css");
-		readfile($styleFile);
-		die();
-	}
+// try to serve as a static file
+$staticFile = __DIR__ . "/static/$currentPath";
+if (file_exists($staticFile)) {
+	// add correct content type header
+	header("Content-Type: " . mime_content_type($staticFile));
+	readfile($staticFile);
+	die();
+}
 
+// get page from the pages directory
+$pageFile = __DIR__ . "/pages$currentPath.php";
+
+if (str_starts_with($currentPath, "/lib") || !file_exists($pageFile)) {
 	$pageBuilder->err404();
 	$pageBuilder->render();
 	die(404);
