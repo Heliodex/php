@@ -1,3 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+require_once "lib/page.php";
+
+$_ = new Page("Log in");
+?>
+
 <h1>Log in</h1>
 
 <form>

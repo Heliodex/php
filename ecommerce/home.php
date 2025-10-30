@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 require_once "lib/database.php";
+require_once "lib/page.php";
+
+$_ = new Page("Home");
 
 $query = $DB->query("SELECT * FROM UsersAuto");
 

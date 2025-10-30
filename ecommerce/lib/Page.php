@@ -2,47 +2,17 @@
 
 declare(strict_types=1);
 
+require_once "lib/site.php";
+
+$site = new Site("My E-commerce Site", "http://localhost:8000");
+
 class Page
 {
 	private string $title;
-	private string $content = "";
 
 	public function __construct(string $title)
 	{
 		$this->title = $title;
-	}
-
-	public function addContent(string $html): void
-	{
-		$this->content .= $html;
-	}
-
-	public function err404(): void
-	{
-		http_response_code(404);
-		$this->addContent(
-			<<<HTML
-<h1>404 Not Found</h1>
-<p>The page you requested could not be found.</p>
-HTML
-		);
-	}
-
-	public function err500(string $message = ""): void
-	{
-		http_response_code(500);
-		$this->addContent(
-			<<<HTML
-<h1>500 Internal Server Error</h1>
-<p>There was an internal server error.</p>
-HTML
-		);
-		if ($message !== "")
-			$this->addContent("<p>$message</p>");
-	}
-
-	public function render(): void
-	{
 		echo <<<HTML
 <!doctype html>
 <html lang="en">
@@ -53,7 +23,7 @@ HTML
 	<link
 		rel="stylesheet"
 		href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css">
-	<link rel="stylesheet" href="/main.css">
+	<link rel="stylesheet" href="/static/main.css">
 	<title>{$this->title}</title>
 </head>
 
@@ -61,14 +31,22 @@ HTML
 	<header>
 		<nav>
 			<ul>
-				<li><a href="/">Home</a></li>
-				<li><a href="/login">Log in</a></li>
+				<li><a href="/home.php">Home</a></li>
+				<li><a href="/login.php">Log in</a></li>
 			</ul>
 		</nav>
 	</header>
 	<main>
-		{$this->content}
+HTML;
+	}
+
+	public function __destruct()
+	{
+		echo <<<HTML
 	</main>
+	<footer>
+		<p>🅮 2025 My E-commerce Site</p>
+	</footer>
 </body>
 
 </html>
