@@ -10,7 +10,7 @@ class Page
 {
 	private string $title;
 
-	public function __construct(string $title)
+	function __construct(string $title)
 	{
 		$this->title = $title;
 		echo <<<HTML
@@ -37,7 +37,7 @@ class Page
 HTML;
 	}
 
-	public function __destruct()
+	function __destruct()
 	{
 		echo <<<HTML
 	</main>

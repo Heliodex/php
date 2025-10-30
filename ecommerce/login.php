@@ -2,26 +2,23 @@
 
 declare(strict_types=1);
 
-$errors = [];
+require_once "lib/form.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	$username = $_POST["username"] ?? "";
-	$password = $_POST["password"] ?? "";
+$usernameRule = new Rule("Username")
+	->required()
+	->minLength(3)
+	->maxLength(21);
+$passwordRule = new Rule("Password")
+	->required()
+	->minLength(3)
+	->maxLength(6969);
 
-	if (empty($username))
-		$errors["username"] = "Username is required";
-	elseif (strlen($username) < 3)
-		$errors["username"] = "Username must be at least 3 characters long";
+$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [$usernameRule, $passwordRule], function () {
+	if ($_POST["username"] == "kyle")
+		return ["username" => "You are banned"];
 
-	if (empty($password))
-		$errors["password"] = "Password is required";
-	elseif (strlen($password) < 3)
-		$errors["password"] = "Password must be at least 3 characters long";
-
-	if (empty($errors)) {
-		echo "Processing login...";
-	}
-}
+	echo "Login successful!";
+});
 
 require_once "lib/page.php";
 
@@ -32,23 +29,13 @@ $_ = new Page("Log in");
 
 <form method="post">
 	<fieldset>
-		<label for="username">Username</label>
-		<input type="text" id="username" name="username" required>
-		<?php
-		$eusername = $errors["username"] ?? null; // bruh
-		if (isset($eusername))
-			echo "<small class=\"formerror\">$eusername</small>";
-		?>
+		<?= $usernameRule->input() ?>
+		<?= $form->errorNotification("username") ?>
 	</fieldset>
 
 	<fieldset>
-		<label for="password">Password</label>
-		<input type="password" id="password" name="password" required>
-		<?php
-		$epassword = $errors["password"] ?? null;
-		if (isset($epassword))
-			echo "<small class=\"formerror\">$epassword</small>";
-		?>
+		<?= $passwordRule->input("password") ?>
+		<?= $form->errorNotification("password") ?>
 	</fieldset>
 
 	<button>Log in</button>
