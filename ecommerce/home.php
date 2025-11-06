@@ -21,11 +21,13 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 <?php
 foreach ($rows as $row) {
 	$title = htmlspecialchars($row["title"]);
-	echo "<a href=\"cd.php?title=" . urlencode($title) . "\">View CD \"$title\"</a>";
-	echo "<ul>";
-	foreach ($row as $key => $value)
-		echo "<li>$key: $value</li>";
-	echo "</ul><hr>";
+?>
+	<a href="cd.php?title=<?= urlencode($title) ?>">View CD "<?= $title ?>"</a>
+	<ul>
+		<?php foreach ($row as $key => $value) echo "<li>$key: $value</li>"; ?>
+	</ul>
+	<hr>
+<?php
 }
 
 if (count($rows) === 0)

@@ -18,8 +18,13 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 
 <?php
 foreach ($rows as $row) {
-	echo "<ul>";
-	foreach ($row as $key => $value)
-		echo "<li>$key: $value</li>";
-	echo "</ul><hr>";
+?>
+	<ul>
+		<?php foreach ($row as $key => $value) echo "<li>$key: $value</li>"; ?>
+	</ul>
+	<hr>
+<?php
 }
+
+if (count($rows) === 0)
+	echo "<p>No users found in the database. (how are you here? this requires you to be logged in to see this page...)</p>";
