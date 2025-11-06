@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
+require_once "lib/session.php";
+
+new Session(true);
+
 require_once "lib/database.php";
 require_once "lib/page.php";
 
 $_ = new Page("Home");
 
-$query = $DB->query("SELECT * FROM UsersAuto");
-
+$query = $DB->query("SELECT * FROM user;");
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 

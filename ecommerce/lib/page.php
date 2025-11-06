@@ -13,6 +13,18 @@ class Page
 	function __construct(string $title)
 	{
 		$this->title = $title;
+
+		$loggedin = isset($_SESSION["user"]);
+
+		$links = "";
+		if ($loggedin) {
+			$links .= "<li><a href=\"/home.php\">Home</a></li>";
+			$links .= "<li><form method=\"post\" action=\"/logout.php\" class=\"inline-form\"><button type=\"submit\">Log out</button></form></li>";
+		} else {
+			$links .= "<li><a href=\"/login.php\">Log in</a></li>";
+			$links .= "<li><a href=\"/register.php\">Register</a></li>";
+		}
+
 		echo <<<HTML
 <!doctype html>
 <html lang="en">
@@ -26,13 +38,7 @@ class Page
 
 <body>
 	<header>
-		<nav>
-			<ul>
-				<li><a href="/home.php">Home</a></li>
-				<li><a href="/login.php">Log in</a></li>
-				<li><a href="/register.php">Register</a></li>
-			</ul>
-		</nav>
+		<nav><ul>{$links}</ul></nav>
 	</header>
 	<main>
 HTML;

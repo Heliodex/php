@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+require_once "lib/session.php";
+
+new Session(false);
+
 require_once "lib/form.php";
 
 $usernameRule = new Rule("Username")
@@ -25,12 +29,18 @@ $form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [$usernameRule, $passwordRu
 
 	require_once "lib/database.php";
 
-	$DB->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)")
-		->execute([
-			":username" => $_POST["username"],
-			":email" => $_POST["email"],
-			":password" => $hash,
-		]);
+	$query = $DB->prepare(
+		"INSERT INTO user (username, email, password) VALUES (:username, :email, :password);
+		SELECT id FROM user WHERE username = :username;"
+	);
+	$query->execute([
+		":username" => $_POST["username"],
+		":email" => $_POST["email"],
+		":password" => $hash,
+	]);
+
+	$user = $query->fetch(PDO::FETCH_ASSOC);
+	$_SESSION["user"] = $user["id"];
 });
 
 require_once "lib/page.php";

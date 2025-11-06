@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+require_once "lib/session.php";
+
+new Session(false);
+
 require_once "lib/form.php";
 
 $usernameRule = new Rule("Username")
@@ -27,7 +31,8 @@ $form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [$usernameRule, $passwordRu
 	if (!$user || !password_verify($_POST["password"], $user["password"]))
 		return ["username" => "Invalid username or password"];
 
-	echo "Login successful! Welcome, " . htmlspecialchars($user["username"]) . "!";
+	$_SESSION["user"] = $user["id"];
+	header("Location: home.php");
 });
 
 require_once "lib/page.php";
