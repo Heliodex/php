@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 require_once "lib/session.php";
-
 new Session(false);
 
 require_once "lib/form.php";

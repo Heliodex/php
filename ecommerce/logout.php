@@ -1,7 +1,6 @@
 <?php
 
 require_once "lib/session.php";
-
 new Session(true);
 
 if (isset($_SESSION["user"]))
