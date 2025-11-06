@@ -14,13 +14,23 @@ $emailRule = new Rule("Email")
 $passwordRule = new Rule("Password")
 	->required()
 	->minLength(3)
-	->maxLength(6969);
+	->maxLength(6969)
+	->password();
 
 $form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [$usernameRule, $passwordRule], function () {
 	if ($_POST["username"] == "kyle")
 		return ["username" => "You are banned"];
 
-	echo "Login successful!";
+	$hash = password_hash($_POST["password"], PASSWORD_ARGON2ID);
+
+	require_once "lib/database.php";
+
+	$DB->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)")
+		->execute([
+			":username" => $_POST["username"],
+			":email" => $_POST["email"],
+			":password" => $hash,
+		]);
 });
 
 require_once "lib/page.php";
@@ -32,17 +42,17 @@ $_ = new Page("Register");
 
 <form method="post">
 	<fieldset>
-		<?= $usernameRule->input() ?>
+		<?= $usernameRule->input($_POST) ?>
 		<?= $form->errorNotification("username") ?>
 	</fieldset>
 
 	<fieldset>
-		<?= $emailRule->input("email") ?>
+		<?= $emailRule->input($_POST) ?>
 		<?= $form->errorNotification("email") ?>
 	</fieldset>
 
 	<fieldset>
-		<?= $passwordRule->input("password") ?>
+		<?= $passwordRule->input($_POST) ?>
 		<?= $form->errorNotification("password") ?>
 	</fieldset>
 

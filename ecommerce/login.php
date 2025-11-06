@@ -11,13 +11,23 @@ $usernameRule = new Rule("Username")
 $passwordRule = new Rule("Password")
 	->required()
 	->minLength(3)
-	->maxLength(6969);
+	->maxLength(6969)
+	->password();
 
 $form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [$usernameRule, $passwordRule], function () {
 	if ($_POST["username"] == "kyle")
 		return ["username" => "You are banned"];
 
-	echo "Login successful!";
+	require_once "lib/database.php";
+
+	$query = $DB->prepare("SELECT * FROM user WHERE username = :username");
+	$query->execute([":username" => $_POST["username"]]);
+
+	$user = $query->fetch(PDO::FETCH_ASSOC);
+	if (!$user || !password_verify($_POST["password"], $user["password"]))
+		return ["username" => "Invalid username or password"];
+
+	echo "Login successful! Welcome, " . htmlspecialchars($user["username"]) . "!";
 });
 
 require_once "lib/page.php";
@@ -29,12 +39,12 @@ $_ = new Page("Log in");
 
 <form method="post">
 	<fieldset>
-		<?= $usernameRule->input() ?>
+		<?= $usernameRule->input($_POST) ?>
 		<?= $form->errorNotification("username") ?>
 	</fieldset>
 
 	<fieldset>
-		<?= $passwordRule->input("password") ?>
+		<?= $passwordRule->input($_POST) ?>
 		<?= $form->errorNotification("password") ?>
 	</fieldset>
 

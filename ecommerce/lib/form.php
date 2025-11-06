@@ -47,6 +47,12 @@ class Rule // 34
 		return $this;
 	}
 
+	function password(): self
+	{
+		$this->type = "password";
+		return $this;
+	}
+
 	function validate(array $data): ?string
 	{
 		$value = $data[$this->field] ?? "";
@@ -63,10 +69,12 @@ class Rule // 34
 		return null;
 	}
 
-	function input(): string
+	function input(array $postData): string
 	{
+		$value = $this->type === "password" ? "" : $postData[$this->field] ?? "";
+
 		return "<label for=\"{$this->field}\">{$this->name}</label>"
-			. "<input type=\"{$this->type}\" id=\"{$this->field}\" name=\"{$this->field}\"{$this->props}>";
+			. "<input type=\"{$this->type}\" id=\"{$this->field}\" name=\"{$this->field}\" value=\"$value\"{$this->props}>";
 	}
 }
 
