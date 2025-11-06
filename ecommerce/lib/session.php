@@ -32,11 +32,11 @@ class Session
 		die;
 	}
 
-	function __construct(bool $loginRequired)
+	function __construct(?bool $loginRequired = null)
 	{
-		if ($loginRequired)
+		if ($loginRequired === true)
 			$this->requireLogin();
-		else
+		else if ($loginRequired === false)
 			$this->requireLogout();
 	}
 }

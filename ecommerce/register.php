@@ -20,7 +20,11 @@ $passwordRule = new Rule("Password")
 	->maxLength(6969)
 	->password();
 
-$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [$usernameRule, $passwordRule], function () {
+$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [
+	$usernameRule,
+	$emailRule,
+	$passwordRule
+], function () {
 	if ($_POST["username"] == "kyle")
 		return ["username" => "You are banned"];
 

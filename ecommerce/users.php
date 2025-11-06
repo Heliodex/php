@@ -8,25 +8,18 @@ new Session(true);
 require_once "lib/database.php";
 require_once "lib/page.php";
 
-$_ = new Page("Home");
+$_ = new Page("Users");
 
-$query = $DB->query("SELECT * FROM cd;");
+$query = $DB->query("SELECT id, username, email FROM user;");
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<h1>Home</h1>
-
-<h2>CDs in Database</h2>
+<h1>Users</h1>
 
 <?php
 foreach ($rows as $row) {
-	$title = htmlspecialchars($row["title"]);
-	echo "<a href=\"cd.php?title=" . urlencode($title) . "\">View CD \"$title\"</a>";
 	echo "<ul>";
 	foreach ($row as $key => $value)
 		echo "<li>$key: $value</li>";
 	echo "</ul><hr>";
 }
-
-if (count($rows) === 0)
-	echo "<p>No CDs found in the database.</p>";

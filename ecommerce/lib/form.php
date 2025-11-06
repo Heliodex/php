@@ -11,8 +11,11 @@ class Rule // 34
 	private bool $required = false;
 	private int $minlen = 0;
 	private ?int $maxlen = null;
+	private ?int $minval = 0;
+	private ?int $maxval = null;
 	private string $type = "text";
 	private bool $isEmail = false;
+	private bool $isDecimal = false;
 
 	function __construct(string $name)
 	{
@@ -53,6 +56,42 @@ class Rule // 34
 		return $this;
 	}
 
+	function number(): self
+	{
+		$this->type = "number";
+		return $this;
+	}
+
+	function minValue(int $minValue): self
+	{
+		if ($this->type !== "number")
+			throw new Exception("minValue can only be set for number fields");
+
+		$this->minval = $minValue;
+		$this->props .= " min=\"$minValue\"";
+		return $this;
+	}
+
+	function maxValue(int $maxValue): self
+	{
+		if ($this->type !== "number")
+			throw new Exception("maxValue can only be set for number fields");
+
+		$this->maxval = $maxValue;
+		$this->props .= " max=\"$maxValue\"";
+		return $this;
+	}
+
+	function decimal(): self
+	{
+		$this->isDecimal = true;
+		if ($this->type !== "number")
+			throw new Exception("decimal can only be set for number fields");
+
+		$this->props .= " step=\"0.01\"";
+		return $this;
+	}
+
 	function validate(array $data): ?string
 	{
 		$value = $data[$this->field] ?? "";
@@ -65,6 +104,19 @@ class Rule // 34
 			return "{$this->name} must be at most {$this->maxlen} characters long";
 		if ($this->isEmail && !filter_var($value, FILTER_VALIDATE_EMAIL))
 			return "{$this->name} must be a valid email address";
+
+		if ($this->type === "number") {
+			if (!is_numeric($value))
+				return "{$this->name} must be a valid number";
+			if ($this->minval !== null && $value < $this->minval)
+				return "{$this->name} must be at least {$this->minval}";
+			if ($this->maxval !== null && $value > $this->maxval)
+				return "{$this->name} must be at most {$this->maxval}";
+
+			$float = floatval($value);
+			if ($this->isDecimal && $float != round($float, 2))
+				return "{$this->name} must be a valid decimal number with at most two decimal places";
+		}
 
 		return null;
 	}

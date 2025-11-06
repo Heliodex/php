@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+require_once "lib/session.php";
 require_once "lib/site.php";
 
 $site = new Site("My E-commerce Site", "http://localhost:8000");
@@ -14,11 +15,13 @@ class Page
 	{
 		$this->title = $title;
 
-		$loggedin = isset($_SESSION["user"]);
+		$session = new Session();
 
 		$links = "";
-		if ($loggedin) {
+		if ($session->isLoggedIn()) {
 			$links .= "<li><a href=\"/home.php\">Home</a></li>";
+			$links .= "<li><a href=\"/users.php\">Users</a></li>";
+			$links .= "<li><a href=\"/addcd.php\">Add CD</a></li>";
 			$links .= "<li><form method=\"post\" action=\"/logout.php\" class=\"inline-form\"><button type=\"submit\">Log out</button></form></li>";
 		} else {
 			$links .= "<li><a href=\"/login.php\">Log in</a></li>";
