@@ -17,7 +17,7 @@ $passwordRule = new Rule("Password")
 	->maxLength(6969)
 	->password();
 
-$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [
+$form = new Form("login", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 	$usernameRule,
 	$passwordRule
 ], function () {
@@ -44,7 +44,7 @@ $_ = new Page("Log in");
 
 <h1>Log in</h1>
 
-<form method="post">
+<form method="post" action="?/login">
 	<fieldset>
 		<?= $usernameRule->input($_POST) ?>
 		<?= $form->errorNotification("username") ?>

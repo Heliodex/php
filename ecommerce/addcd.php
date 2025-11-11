@@ -8,7 +8,7 @@ new Session(true);
 require_once "lib/form.php";
 require_once "lib/cdform.php";
 
-$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, $field, function () {
+$form = new Form("add", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, function () {
 	require_once "lib/database.php";
 
 	$query = $DB->prepare("INSERT INTO cd (title, label, year, artist, price) VALUES (:title, :label, :year, :artist, :price)");
@@ -30,7 +30,7 @@ $_ = new Page("Add CD");
 
 <h1>Add CD</h1>
 
-<form method="post" class="table">
+<form method="post" action="?/add" class="table">
 	<fieldset>
 		<?= $titleRule->input($_POST) ?>
 		<?= $form->errorNotification("title") ?>

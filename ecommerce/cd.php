@@ -12,18 +12,30 @@ if ($id === null)
 require_once "lib/page.php";
 require_once "lib/cdform.php";
 
-$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, $fields, function () {
+$trackNameRule = new Rule("Track Name")
+	->required()
+	->maxLength(255);
+$trackNumberRule = new Rule("Track Number")
+	->required()
+	->number()
+	->minValue(1)
+	->maxValue(99);
+$trackDurationRule = new Rule("Track Duration")
+	->required()
+	->time();
+
+$form = new Form("update", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, function () {
 	require_once "lib/database.php";
 
 	$query = $DB->prepare(
-		"UPDATE cd
-		SET
+		"UPDATE cd SET
 			title = :title,
 			label = :label,
 			year = :year,
 			artist = :artist,
 			price = :price
-		WHERE id = :id");
+		WHERE id = :id"
+	);
 	$query->execute([
 		":title" => $_POST["title"],
 		":label" => $_POST["label"],
@@ -36,11 +48,37 @@ $form = new Form($_SERVER["REQUEST_METHOD"], $_POST, $fields, function () {
 	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
 
-require_once "lib/database.php";
+$trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
+	$trackNameRule,
+	$trackNumberRule,
+	$trackDurationRule
+], function () {
+	require_once "lib/database.php";
 
-$query = $DB->prepare("SELECT * FROM cd WHERE id = ?");
-$query->execute([$id]);
+	$query = $DB->prepare(
+		"INSERT INTO track (name, trackNumber, duration, cdId) VALUES (:name, :trackNumber, :duration, :cdId)"
+	);
+	$query->execute([
+		":name" => $_POST["track_name"],
+		":trackNumber" => $_POST["track_number"],
+		":duration" => $_POST["track_duration"],
+		":cdId" => $_GET["id"],
+	]);
+
+	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
+});
+
+require_once "lib/database.php";
+// select CD and associated tracks
+$query = $DB->prepare(
+	"SELECT * FROM cd WHERE id = :id;
+	SELECT * FROM track WHERE cdId = :id ORDER BY trackNumber ASC"
+);
+$query->execute([
+	":id" => $id
+]);
 $cd = $query->fetch(PDO::FETCH_ASSOC);
+$tracks = $query->fetchAll(PDO::FETCH_ASSOC);
 
 if ($cd === false)
 	require_once "lib/404.php";
@@ -50,16 +88,29 @@ $formpost = count($_POST) == 0 ? $cd : $_POST;
 $_ = new Page("CD Details");
 ?>
 
-<h1>CD Details</h1>
+<h1>CD details</h1>
 
 <ul>
 	<?php foreach ($cd as $key => $value) echo "<li>$key: $value</li>"; ?>
 </ul>
-<hr>
+
+<h2>Tracks</h2>
+
+<?php if (count($tracks) == 0) { ?>
+	<p>No tracks found for this CD.</p>
+<?php } else { ?>
+	<ol>
+		<?php foreach ($tracks as $track) { ?>
+			<li>
+				<?= htmlspecialchars($track["trackNumber"] . ". " . $track["name"] . " (" . $track["duration"] . ")") ?>
+			</li>
+		<?php } ?>
+	</ol>
+<?php } ?>
 
 <h2>Update CD</h2>
 
-<form method="post" class="table">
+<form method="post" action="?/update&id=<?= urlencode($cd["id"]) ?>" class="table">
 	<fieldset>
 		<?= $titleRule->input($formpost) ?>
 		<?= $form->errorNotification("title") ?>
@@ -86,4 +137,27 @@ $_ = new Page("CD Details");
 	</fieldset>
 
 	<button>Update CD</button>
+</form>
+
+<hr>
+
+<h2>Add tracks</h2>
+
+<form method="post" action="?/track&id=<?= urlencode($cd["id"]) ?>" class="table">
+	<fieldset>
+		<?= $trackNameRule->input($_POST) ?>
+		<?= $trackForm->errorNotification("track_name") ?>
+	</fieldset>
+
+	<fieldset>
+		<?= $trackNumberRule->input($_POST) ?>
+		<?= $trackForm->errorNotification("track_number") ?>
+	</fieldset>
+
+	<fieldset>
+		<?= $trackDurationRule->input($_POST) ?>
+		<?= $trackForm->errorNotification("track_duration") ?>
+	</fieldset>
+
+	<button>Add Track</button>
 </form>

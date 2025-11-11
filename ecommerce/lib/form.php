@@ -20,7 +20,7 @@ class Rule // 34
 	function __construct(string $name)
 	{
 		$this->name = $name;
-		$this->field = strtolower($name);
+		$this->field = str_replace(" ", "_", strtolower($name));
 	}
 
 	function required(): self
@@ -59,6 +59,12 @@ class Rule // 34
 	function number(): self
 	{
 		$this->type = "number";
+		return $this;
+	}
+
+	function time(): self
+	{
+		$this->type = "time";
 		return $this;
 	}
 
@@ -136,9 +142,10 @@ class Form
 	private bool $enabled = false;
 	private $callback;
 
-	function __construct(string $method, array $postData, array $validationRules, callable $callback)
+	function __construct(string $formName, string $method, array $getData, array $postData, array $validationRules, callable $callback)
 	{
-		if ($method !== "POST")	return;
+		if ($method !== "POST" or !isset($getData["/$formName"]))
+			return;
 		$this->enabled = true;
 		$this->callback = $callback;
 
