@@ -20,9 +20,9 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 
 <?php
 foreach ($rows as $row) {
-	$title = htmlspecialchars($row["title"]);
+	$id = htmlspecialchars($row["id"]);
 ?>
-	<a href="cd.php?title=<?= urlencode($title) ?>">View CD "<?= $title ?>"</a>
+	<a href="cd.php?id=<?= urlencode($id) ?>">View CD <?= $id ?></a>
 	<ul>
 		<?php foreach ($row as $key => $value) echo "<li>$key: $value</li>"; ?>
 	</ul>

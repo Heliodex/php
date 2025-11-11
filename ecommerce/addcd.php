@@ -6,35 +6,9 @@ require_once "lib/session.php";
 new Session(true);
 
 require_once "lib/form.php";
+require_once "lib/cdform.php";
 
-$titleRule = new Rule("Title")
-	->required()
-	->maxLength(255);
-$labelRule = new Rule("Label")
-	->required()
-	->maxLength(255);
-$yearRule = new Rule("Year")
-	->required()
-	->number()
-	->minValue(1900)
-	->maxValue(2100);
-$artistRule = new Rule("Artist")
-	->required()
-	->maxLength(255);
-$priceRule = new Rule("Price")
-	->required()
-	->number()
-	->minValue(0)
-	->maxValue(1000)
-	->decimal();
-
-$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [
-	$titleRule,
-	$labelRule,
-	$yearRule,
-	$artistRule,
-	$priceRule
-], function () {
+$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, $field, function () {
 	require_once "lib/database.php";
 
 	$query = $DB->prepare("INSERT INTO cd (title, label, year, artist, price) VALUES (:title, :label, :year, :artist, :price)");
