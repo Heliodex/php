@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once "config.php";
+require "config.php";
 
 $init = <<<SQL
 CREATE TABLE IF NOT EXISTS user (

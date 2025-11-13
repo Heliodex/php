@@ -40,6 +40,8 @@ hr {
 	border: 0;
 	border-top: 1px solid;
 	opacity: 0.25;
+	height: 1.5rem;
+	background: none;
 }
 
 h1,
@@ -146,7 +148,7 @@ form {
 		flex-direction: row;
 		align-items: center;
 	
-		label 	{
+		label {
 			min-width: 8rem;
 		}
 	}
@@ -171,4 +173,12 @@ nav ul {
 	font-size: var(--font-size-0);
 	padding: var(--size-2) var(--size-3);
 	border-radius: var(--size-1);
+}
+
+.bottomgap {
+	padding-bottom: 1.5rem;
+}
+
+footer {
+	padding-top: 2rem;
 }

@@ -6,8 +6,9 @@ class Session
 {
 	function start(): void
 	{
-		if (session_status() === PHP_SESSION_NONE)
-			session_start();
+		if (session_status() !== PHP_SESSION_NONE) return;
+		session_save_path("{$_SERVER["DOCUMENT_ROOT"]}/sessions");
+		session_start();
 	}
 
 	function isLoggedIn(): bool

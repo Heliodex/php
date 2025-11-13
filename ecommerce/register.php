@@ -20,7 +20,7 @@ $passwordRule = new Rule("Password")
 	->maxLength(6969)
 	->password();
 
-$form = new Form($_SERVER["REQUEST_METHOD"], $_POST, [
+$form = new Form("register", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 	$usernameRule,
 	$emailRule,
 	$passwordRule
@@ -53,7 +53,7 @@ $_ = new Page("Register");
 
 <h1>Register</h1>
 
-<form method="post">
+<form method="post" action="?/register">
 	<fieldset>
 		<?= $usernameRule->input($_POST) ?>
 		<?= $form->errorNotification("username") ?>

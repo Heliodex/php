@@ -21,8 +21,7 @@ $trackNumberRule = new Rule("Track Number")
 	->minValue(1)
 	->maxValue(99);
 $trackDurationRule = new Rule("Track Duration")
-	->required()
-	->time();
+	->required();
 
 $form = new Form("update", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, function () {
 	require_once "lib/database.php";
@@ -55,29 +54,39 @@ $trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 ], function () {
 	require_once "lib/database.php";
 
+	$duration = DateTime::createFromFormat("i:s", $_POST["track_duration"]);
+	if ($duration === false)
+		return ["track_duration" => "Invalid time format, expected MM:SS"];
+
+	$duration = $duration->format("H:i:s");
+
 	$query = $DB->prepare(
 		"INSERT INTO track (name, trackNumber, duration, cdId) VALUES (:name, :trackNumber, :duration, :cdId)"
 	);
+
 	$query->execute([
 		":name" => $_POST["track_name"],
 		":trackNumber" => $_POST["track_number"],
-		":duration" => $_POST["track_duration"],
+		":duration" => $duration,
 		":cdId" => $_GET["id"],
 	]);
 
 	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
 
-require_once "lib/database.php";
+require "lib/database.php";
+
 // select CD and associated tracks
 $query = $DB->prepare(
 	"SELECT * FROM cd WHERE id = :id;
-	SELECT * FROM track WHERE cdId = :id ORDER BY trackNumber ASC"
+	SELECT * FROM track WHERE cdId = :id ORDER BY trackNumber ASC;"
 );
 $query->execute([
 	":id" => $id
 ]);
 $cd = $query->fetch(PDO::FETCH_ASSOC);
+// $tracks = $query->fetchAll(PDO::FETCH_ASSOC)
+$query->nextRowset();
 $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
 
 if ($cd === false)
@@ -90,23 +99,25 @@ $_ = new Page("CD Details");
 
 <h1>CD details</h1>
 
-<ul>
+<ul class="bottomgap">
 	<?php foreach ($cd as $key => $value) echo "<li>$key: $value</li>"; ?>
 </ul>
 
 <h2>Tracks</h2>
 
-<?php if (count($tracks) == 0) { ?>
-	<p>No tracks found for this CD.</p>
-<?php } else { ?>
-	<ol>
-		<?php foreach ($tracks as $track) { ?>
-			<li>
-				<?= htmlspecialchars($track["trackNumber"] . ". " . $track["name"] . " (" . $track["duration"] . ")") ?>
-			</li>
-		<?php } ?>
-	</ol>
-<?php } ?>
+<div class="bottomgap">
+	<?php if (count($tracks) == 0) { ?>
+		<p>No tracks found for this CD.</p>
+	<?php } else { ?>
+		<ul>
+			<?php foreach ($tracks as $track) { ?>
+				<li>
+					<?= htmlspecialchars($track["trackNumber"] . ". " . $track["name"] . " (" . $track["duration"] . ")") ?>
+				</li>
+			<?php } ?>
+		</ul>
+	<?php } ?>
+</div>
 
 <h2>Update CD</h2>
 
