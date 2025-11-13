@@ -63,13 +63,38 @@ $trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 	$query = $DB->prepare(
 		"INSERT INTO track (name, trackNumber, duration, cdId) VALUES (:name, :trackNumber, :duration, :cdId)"
 	);
-
 	$query->execute([
 		":name" => $_POST["track_name"],
 		":trackNumber" => $_POST["track_number"],
 		":duration" => $duration,
 		":cdId" => $_GET["id"],
 	]);
+
+	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
+});
+
+new Form("delete", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () {
+	require_once "lib/database.php";
+
+	$cdId = $_GET["id"] ?? null;
+	if ($cdId === null)
+		return;
+
+	$query = $DB->prepare("DELETE FROM cd WHERE id = ?");
+	$query->execute([$cdId]);
+
+	header("Location: /home.php");
+});
+
+new Form("deletetrack", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () {
+	require_once "lib/database.php";
+
+	$trackId = $_GET["trackid"] ?? null;
+	if ($trackId === null)
+		return;
+
+	$query = $DB->prepare("DELETE FROM track WHERE id = ?");
+	$query->execute([$trackId]);
 
 	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
@@ -103,16 +128,31 @@ $_ = new Page("CD Details");
 	<?php foreach ($cd as $key => $value) echo "<li>$key: $value</li>"; ?>
 </ul>
 
+<form method="post" action="?/delete&id=<?= urlencode($cd["id"]) ?>" class="bottomgap">
+	<button type="submit" class="smallbtn">Delete CD</button>
+</form>
+
 <h2>Tracks</h2>
 
 <div class="bottomgap">
 	<?php if (count($tracks) == 0) { ?>
 		<p>No tracks found for this CD.</p>
 	<?php } else { ?>
-		<ul>
-			<?php foreach ($tracks as $track) { ?>
+		<ul class="table">
+			<?php
+			foreach ($tracks as $track) {
+				$duration = $track["duration"];
+				// trim leading 00: from duration
+				if (str_starts_with($duration, "00:"))
+					$duration = substr($duration, 3);
+			?>
 				<li>
-					<?= htmlspecialchars($track["trackNumber"] . ". " . $track["name"] . " (" . $track["duration"] . ")") ?>
+					<span>
+						<?= htmlspecialchars($track["trackNumber"] . ". " . $track["name"] . " (" . $duration . ")") ?>
+					</span>
+					<form method="post" action="?/deletetrack&id=<?= urlencode($cd["id"]) ?>&trackid=<?= urlencode($track["id"]) ?>" class="inline-form">
+						<button type="submit" class="smallbtn">Delete track</button>
+					</form>
 				</li>
 			<?php } ?>
 		</ul>
@@ -121,7 +161,7 @@ $_ = new Page("CD Details");
 
 <h2>Update CD</h2>
 
-<form method="post" action="?/update&id=<?= urlencode($cd["id"]) ?>" class="table">
+<form method="post" action="?/update&id=<?= urlencode($cd["id"]) ?>" class="table bottomgap">
 	<fieldset>
 		<?= $titleRule->input($formpost) ?>
 		<?= $form->errorNotification("title") ?>
@@ -149,8 +189,6 @@ $_ = new Page("CD Details");
 
 	<button>Update CD</button>
 </form>
-
-<hr>
 
 <h2>Add tracks</h2>
 

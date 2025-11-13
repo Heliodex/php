@@ -11,8 +11,11 @@ require_once "lib/cdform.php";
 $form = new Form("add", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, function () {
 	require_once "lib/database.php";
 
-	$query = $DB->prepare("INSERT INTO cd (title, label, year, artist, price) VALUES (:title, :label, :year, :artist, :price)");
+	$randId = bin2hex(random_bytes(18));
+
+	$query = $DB->prepare("INSERT INTO cd (id, title, label, year, artist, price) VALUES (:id, :title, :label, :year, :artist, :price)");
 	$query->execute([
+		":id" => $randId,
 		":title" => $_POST["title"],
 		":label" => $_POST["label"],
 		":year" => $_POST["year"],
@@ -20,7 +23,7 @@ $form = new Form("add", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, func
 		":price" => $_POST["price"],
 	]);
 
-	header("Location: /cd.php?title=" . urlencode($_POST["title"]));
+	header("Location: /cd.php?id=" . urlencode($randId));
 });
 
 require_once "lib/page.php";

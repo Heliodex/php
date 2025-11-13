@@ -147,16 +147,24 @@ form {
 	&.table fieldset {
 		flex-direction: row;
 		align-items: center;
-	
+
 		label {
 			min-width: 8rem;
 		}
 	}
 }
 
-.inline-form button {
-	padding-block: .3ch;
-	padding-inline: var(--size-relative-3);
+ul.table li span {
+	display: inline-block;
+	width: 15rem;
+}
+
+.inline-form {
+	display: inline;
+	button {
+		padding-block: 0.3ch;
+		padding-inline: var(--size-relative-3);
+	}
 }
 
 nav ul {
@@ -176,7 +184,7 @@ nav ul {
 }
 
 .bottomgap {
-	padding-bottom: 1.5rem;
+	padding-bottom: 2rem;
 }
 
 footer {
