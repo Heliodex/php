@@ -23,9 +23,10 @@ $trackNumberRule = new Rule("Track Number")
 $trackDurationRule = new Rule("Track Duration")
 	->required();
 
-$form = new Form("update", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, function () {
-	require_once "lib/database.php";
+require_once "lib/database.php";
 
+
+$form = new Form("update", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, function () use ($DB) {
 	$query = $DB->prepare(
 		"UPDATE cd SET
 			title = :title,
@@ -51,9 +52,7 @@ $trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 	$trackNameRule,
 	$trackNumberRule,
 	$trackDurationRule
-], function () {
-	require_once "lib/database.php";
-
+], function () use ($DB) {
 	$duration = DateTime::createFromFormat("i:s", $_POST["track_duration"]);
 	if ($duration === false)
 		return ["track_duration" => "Invalid time format, expected MM:SS"];
@@ -73,9 +72,7 @@ $trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
 
-new Form("delete", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () {
-	require_once "lib/database.php";
-
+new Form("delete", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () use ($DB) {
 	$cdId = $_GET["id"] ?? null;
 	if ($cdId === null)
 		return;
@@ -86,9 +83,7 @@ new Form("delete", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () {
 	header("Location: /home.php");
 });
 
-new Form("deletetrack", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () {
-	require_once "lib/database.php";
-
+new Form("deletetrack", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () use ($DB) {
 	$trackId = $_GET["trackid"] ?? null;
 	if ($trackId === null)
 		return;
@@ -98,8 +93,6 @@ new Form("deletetrack", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function 
 
 	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
-
-require "lib/database.php";
 
 // select CD and associated tracks
 $query = $DB->prepare(
@@ -117,7 +110,7 @@ $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
 if ($cd === false)
 	require_once "lib/404.php";
 
-$formpost = count($_POST) == 0 ? $cd : $_POST;
+$formpost = count($_POST) === 0 ? $cd : $_POST;
 
 $_ = new Page("CD Details");
 ?>
@@ -135,7 +128,7 @@ $_ = new Page("CD Details");
 <h2>Tracks</h2>
 
 <div class="bottomgap">
-	<?php if (count($tracks) == 0) { ?>
+	<?php if (count($tracks) === 0) { ?>
 		<p>No tracks found for this CD.</p>
 	<?php } else { ?>
 		<ul class="table">

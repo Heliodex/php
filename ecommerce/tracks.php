@@ -10,7 +10,7 @@ require_once "lib/page.php";
 
 $_ = new Page("Tracks");
 
-$query = $DB->query("SELECT id, name, trackNumber, duration FROM track");
+$query = $DB->query("SELECT id, name, trackNumber, duration, cdId FROM track");
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -18,7 +18,7 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 
 <?php
 foreach ($rows as $row) {
-	$id = $row["id"];
+	$id = $row["cdId"];
 ?>
 	<a href="cd.php?id=<?= urlencode($id) ?>">View CD <?= $id ?></a>
 	<ul>

@@ -17,17 +17,19 @@ class Page
 
 		$session = new Session();
 
-		$links = "";
+		$links = [];
 		if ($session->isLoggedIn()) {
-			$links .= "<li><a href=\"/home.php\">Home</a></li>";
-			$links .= "<li><a href=\"/users.php\">Users</a></li>";
-			$links .= "<li><a href=\"/tracks.php\">Tracks</a></li>";
-			$links .= "<li><a href=\"/addcd.php\">Add CD</a></li>";
-			$links .= "<li><form method=\"post\" action=\"/logout.php\" class=\"inline-form\"><button type=\"submit\">Log out</button></form></li>";
+			$links[] = "<a href=\"/home.php\">Home</a>";
+			$links[] = "<a href=\"/users.php\">Users</a>";
+			$links[] = "<a href=\"/tracks.php\">Tracks</a>";
+			$links[] = "<a href=\"/addcd.php\">Add CD</a>";
+			$links[] = "<form method=\"post\" action=\"/logout.php\" class=\"inline-form\"><button type=\"submit\">Log out</button></form>";
 		} else {
-			$links .= "<li><a href=\"/login.php\">Log in</a></li>";
-			$links .= "<li><a href=\"/register.php\">Register</a></li>";
+			$links[] = "<a href=\"/login.php\">Log in</a>";
+			$links[] = "<a href=\"/register.php\">Register</a>";
 		}
+
+		$strlinks = implode("", array_map(fn($link) => "<li>$link</li>", $links)); 
 
 		echo <<<HTML
 <!doctype html>
@@ -43,7 +45,7 @@ class Page
 
 <body hx-boost="true">
 	<header>
-		<nav><ul>{$links}</ul></nav>
+		<nav><ul>{$strlinks}</ul></nav>
 	</header>
 	<main>
 HTML;
