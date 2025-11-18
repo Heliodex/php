@@ -21,6 +21,7 @@ class Page
 		if ($session->isLoggedIn()) {
 			$links .= "<li><a href=\"/home.php\">Home</a></li>";
 			$links .= "<li><a href=\"/users.php\">Users</a></li>";
+			$links .= "<li><a href=\"/tracks.php\">Tracks</a></li>";
 			$links .= "<li><a href=\"/addcd.php\">Add CD</a></li>";
 			$links .= "<li><form method=\"post\" action=\"/logout.php\" class=\"inline-form\"><button type=\"submit\">Log out</button></form></li>";
 		} else {

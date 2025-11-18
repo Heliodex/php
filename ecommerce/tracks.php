@@ -8,17 +8,19 @@ new Session(true);
 require_once "lib/database.php";
 require_once "lib/page.php";
 
-$_ = new Page("Users");
+$_ = new Page("Tracks");
 
-$query = $DB->query("SELECT id, username, email FROM user");
+$query = $DB->query("SELECT id, name, trackNumber, duration FROM track");
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<h1>Users</h1>
+<h1>Tracks</h1>
 
 <?php
 foreach ($rows as $row) {
+	$id = $row["id"];
 ?>
+	<a href="cd.php?id=<?= urlencode($id) ?>">View CD <?= $id ?></a>
 	<ul>
 		<?php foreach ($row as $key => $value) echo "<li>$key: $value</li>"; ?>
 	</ul>

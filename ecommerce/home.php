@@ -10,7 +10,7 @@ require_once "lib/page.php";
 
 $_ = new Page("Home");
 
-$query = $DB->query("SELECT * FROM cd;");
+$query = $DB->query("SELECT * FROM cd");
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
