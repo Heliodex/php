@@ -130,7 +130,7 @@ $_ = new Page("CD Details");
 
 <h2>Tracks</h2>
 
-<div>
+<div class="bottomgap">
 	<?php if (count($tracks) === 0) { ?>
 		<p>No tracks found for this CD.</p>
 	<?php } else { ?>
@@ -152,10 +152,10 @@ $_ = new Page("CD Details");
 				</li>
 			<?php } ?>
 		</ul>
+		<p>Total run time: <?= htmlspecialchars($totalRunTime) ?></p>
 	<?php } ?>
 </div>
 
-<p class="bottomgap">Total run time: <?= htmlspecialchars($totalRunTime) ?></p>
 
 <h2>Update CD</h2>
 
