@@ -97,7 +97,8 @@ new Form("deletetrack", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function 
 // select CD and associated tracks
 $query = $DB->prepare(
 	"SELECT * FROM cd WHERE id = :id;
-	SELECT * FROM track WHERE cdId = :id ORDER BY trackNumber ASC;"
+	SELECT * FROM track WHERE cdId = :id ORDER BY trackNumber ASC;
+	SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(duration))) FROM track WHERE cdId = :id;"
 );
 $query->execute([
 	":id" => $id
@@ -106,6 +107,8 @@ $cd = $query->fetch(PDO::FETCH_ASSOC);
 // $tracks = $query->fetchAll(PDO::FETCH_ASSOC)
 $query->nextRowset();
 $tracks = $query->fetchAll(PDO::FETCH_ASSOC);
+$query->nextRowset();
+$totalRunTime = $query->fetchColumn();
 
 if ($cd === false)
 	require_once "lib/404.php";
@@ -127,7 +130,7 @@ $_ = new Page("CD Details");
 
 <h2>Tracks</h2>
 
-<div class="bottomgap">
+<div>
 	<?php if (count($tracks) === 0) { ?>
 		<p>No tracks found for this CD.</p>
 	<?php } else { ?>
@@ -151,6 +154,8 @@ $_ = new Page("CD Details");
 		</ul>
 	<?php } ?>
 </div>
+
+<p class="bottomgap">Total run time: <?= htmlspecialchars($totalRunTime) ?></p>
 
 <h2>Update CD</h2>
 
