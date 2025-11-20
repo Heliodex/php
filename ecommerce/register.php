@@ -69,5 +69,5 @@ $_ = new Page("Register");
 		<?= $form->errorNotification("password") ?>
 	</fieldset>
 
-	<button>Log in</button>
+	<button class="smallbtn">Register</button>
 </form>

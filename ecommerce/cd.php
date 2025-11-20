@@ -125,7 +125,7 @@ $_ = new Page("CD Details");
 </ul>
 
 <form method="post" action="?/delete&id=<?= urlencode($cd["id"]) ?>" class="bottomgap">
-	<button type="submit" class="smallbtn">Delete CD</button>
+	<button class="smallbtn">Delete CD</button>
 </form>
 
 <h2>Tracks</h2>
@@ -147,7 +147,7 @@ $_ = new Page("CD Details");
 						<?= htmlspecialchars($track["trackNumber"] . ". " . $track["name"] . " (" . $duration . ")") ?>
 					</span>
 					<form method="post" action="?/deletetrack&id=<?= urlencode($cd["id"]) ?>&trackid=<?= urlencode($track["id"]) ?>" class="inline-form">
-						<button type="submit" class="smallbtn">Delete track</button>
+						<button>Delete track</button>
 					</form>
 				</li>
 			<?php } ?>
@@ -185,7 +185,7 @@ $_ = new Page("CD Details");
 		<?= $form->errorNotification("price") ?>
 	</fieldset>
 
-	<button>Update CD</button>
+	<button class="smallbtn">Update CD</button>
 </form>
 
 <h2>Add tracks</h2>
@@ -206,5 +206,5 @@ $_ = new Page("CD Details");
 		<?= $trackForm->errorNotification("track_duration") ?>
 	</fieldset>
 
-	<button>Add Track</button>
+	<button class="smallbtn">Add Track</button>
 </form>

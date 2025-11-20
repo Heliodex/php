@@ -23,7 +23,7 @@ class Page
 			$links[] = "<a href=\"/users.php\">Users</a>";
 			$links[] = "<a href=\"/tracks.php\">Tracks</a>";
 			$links[] = "<a href=\"/addcd.php\">Add CD</a>";
-			$links[] = "<form method=\"post\" action=\"/logout.php\" class=\"inline-form\"><button type=\"submit\">Log out</button></form>";
+			$links[] = "<form method=\"post\" action=\"/logout.php\" class=\"inline-form\"><button>Log out</button></form>";
 		} else {
 			$links[] = "<a href=\"/login.php\">Log in</a>";
 			$links[] = "<a href=\"/register.php\">Register</a>";

@@ -59,5 +59,5 @@ $_ = new Page("Add CD");
 		<?= $form->errorNotification("price") ?>
 	</fieldset>
 
-	<button>Add CD</button>
+	<button class="smallbtn">Add CD</button>
 </form>

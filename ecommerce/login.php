@@ -55,5 +55,5 @@ $_ = new Page("Log in");
 		<?= $form->errorNotification("password") ?>
 	</fieldset>
 
-	<button>Log in</button>
+	<button class="smallbtn">Log in</button>
 </form>
