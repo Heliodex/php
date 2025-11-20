@@ -37,7 +37,7 @@ class Session
 	{
 		if ($loginRequired === true)
 			$this->requireLogin();
-		else if ($loginRequired === false)
+		elseif ($loginRequired === false)
 			$this->requireLogout();
 	}
 }

@@ -172,6 +172,16 @@ nav ul {
 	align-items: center;
 }
 
+table {
+	width: 100%;
+
+	th,
+	td {
+		text-align: left;
+		padding: var(--size-2) var(--size-3);
+	}
+}
+
 .formerror {
 	width: fit-content;
 	display: inline;
