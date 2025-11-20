@@ -20,7 +20,9 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 	<table>
 		<thead>
 			<tr>
-				<?php foreach (array_keys($rows[0]) as $key) echo "<th>$key</th>"; ?>
+				<th>ID</th>
+				<th>Username</th>
+				<th>Email</th>
 			</tr>
 		</thead>
 		<tbody>

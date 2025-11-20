@@ -22,7 +22,12 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 	<table>
 		<thead>
 			<tr>
-				<?php foreach (array_keys($rows[0]) as $key) echo "<th>$key</th>"; ?>
+				<th>ID</th>
+				<th>Title</th>
+				<th>Label</th>
+				<th>Year</th>
+				<th>Artist</th>
+				<th>Price</th>
 			</tr>
 		</thead>
 		<tbody>
