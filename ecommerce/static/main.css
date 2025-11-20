@@ -5,6 +5,10 @@
 @import "https://unpkg.com/open-props/normalize.min.css";
 @import "https://unpkg.com/open-props/buttons.min.css";
 
+@view-transition {
+	navigation: auto;
+}
+
 * {
 	font-family: "Readex Pro", sans-serif;
 	max-inline-size: none;

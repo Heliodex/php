@@ -26,7 +26,7 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 		<tbody>
 			<?php foreach ($rows as $row) { ?>
 				<tr>
-					<?php foreach ($row as $key => $value)
+					<?php foreach ($row as $value)
 						echo "<td>$value</td>"; ?>
 				</tr>
 			<?php } ?>
