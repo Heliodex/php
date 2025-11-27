@@ -12,6 +12,10 @@ if ($id === null)
 require_once "lib/page.php";
 require_once "lib/cdform.php";
 
+$coverFileRule = new Rule("Cover File")
+	->file()
+	->maxSize((int) 5e6) // 5 MB
+	->mediaTypes(["image/*"]);
 $trackNameRule = new Rule("Track Name")
 	->required()
 	->maxLength(255);
@@ -24,7 +28,6 @@ $trackDurationRule = new Rule("Track Duration")
 	->required();
 
 require_once "lib/database.php";
-
 
 $form = new Form("update", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, $fields, function () use ($DB) {
 	$query = $DB->prepare(
@@ -72,6 +75,31 @@ $trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
 
+$coverForm = new Form("image", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [$coverFileRule], function () use ($DB) {
+	$cdId = $_GET["id"] ?? null;
+	if ($cdId === null)
+		return;
+
+	$file = $_FILES["cover_file"] ?? null;
+	if ($file === null || $file["error"] !== UPLOAD_ERR_OK)
+		return ["cover" => "File upload error"];
+
+	$coverData = file_get_contents($file["tmp_name"]);
+	if ($coverData === false)
+		return ["cover" => "Failed to read uploaded file"];
+
+	// write file to covers/<cdId>
+	$coverDir = __DIR__ . "/covers";
+	if (!is_dir($coverDir) && !mkdir($coverDir, 0755, true))
+		return ["cover" => "Failed to create directory $coverDir"];
+
+	$coverPath = "$coverDir/$cdId";
+	if (!move_uploaded_file($file["tmp_name"], $coverPath))
+		return ["cover" => "Failed to save cover image to $coverPath"];
+
+	header("Location: /cd.php?id=" . urlencode($cdId));
+});
+
 new Form("delete", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () use ($DB) {
 	$cdId = $_GET["id"] ?? null;
 	if ($cdId === null)
@@ -114,6 +142,7 @@ if ($cd === false)
 	require_once "lib/404.php";
 
 $formpost = count($_POST) === 0 ? $cd : $_POST;
+$urlid = urlencode($cd["id"]);
 
 $_ = new Page("CD Details");
 ?>
@@ -124,7 +153,21 @@ $_ = new Page("CD Details");
 	<?php foreach ($cd as $key => $value) echo "<li>$key: $value</li>"; ?>
 </ul>
 
-<form method="post" action="?/delete&id=<?= urlencode($cd["id"]) ?>" class="bottomgap">
+<h2>CD Cover Image</h2>
+
+<div class="bottomgap">
+	<img src="cover.php?id=<?= $urlid ?>" alt="CD Cover Image" class="cover">
+</div>
+
+<form method="post" action="?/image&id=<?= $urlid ?>" enctype="multipart/form-data" class="table bottomgap">
+	<fieldset>
+		<?= $coverFileRule->input($_FILES) ?>
+		<button class="smallbtn">Upload Image</button>
+	</fieldset>
+	<?= $coverForm->errorNotification("cover") ?>
+</form>
+
+<form method="post" action="?/delete&id=<?= $urlid ?>" class="bottomgap">
 	<button class="smallbtn">Delete CD</button>
 </form>
 
@@ -146,7 +189,7 @@ $_ = new Page("CD Details");
 					<span>
 						<?= htmlspecialchars($track["trackNumber"] . ". " . $track["name"] . " (" . $duration . ")") ?>
 					</span>
-					<form method="post" action="?/deletetrack&id=<?= urlencode($cd["id"]) ?>&trackid=<?= urlencode($track["id"]) ?>" class="inline-form">
+					<form method="post" action="?/deletetrack&id=<?= $urlid ?>&trackid=<?= urlencode($track["id"]) ?>" class="inline-form">
 						<button>Delete track</button>
 					</form>
 				</li>
@@ -156,10 +199,9 @@ $_ = new Page("CD Details");
 	<?php } ?>
 </div>
 
-
 <h2>Update CD</h2>
 
-<form method="post" action="?/update&id=<?= urlencode($cd["id"]) ?>" class="table bottomgap">
+<form method="post" action="?/update&id=<?= $urlid ?>" class="table bottomgap">
 	<fieldset>
 		<?= $titleRule->input($formpost) ?>
 		<?= $form->errorNotification("title") ?>
@@ -190,7 +232,7 @@ $_ = new Page("CD Details");
 
 <h2>Add tracks</h2>
 
-<form method="post" action="?/track&id=<?= urlencode($cd["id"]) ?>" class="table">
+<form method="post" action="?/track&id=<?= $urlid ?>" class="table">
 	<fieldset>
 		<?= $trackNameRule->input($_POST) ?>
 		<?= $trackForm->errorNotification("track_name") ?>

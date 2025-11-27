@@ -125,6 +125,10 @@ input[type="number"] {
 	width: 10rem;
 }
 
+input[type="file"] {
+	width: fit-content;
+}
+
 a {
 	color: var(--blue-5);
 	text-decoration: none;
@@ -162,6 +166,12 @@ form {
 	}
 }
 
+.rowform {
+	flex-direction: row;
+	align-items: center;
+	gap: var(--size-3);
+}
+
 ul.table li span {
 	display: inline-block;
 	width: 15rem;
@@ -178,6 +188,12 @@ ul.table li span {
 nav ul {
 	display: flex;
 	align-items: center;
+}
+
+.cover {
+	border: 1px solid white;
+	width: 200px;
+	height: 200px;
 }
 
 table {

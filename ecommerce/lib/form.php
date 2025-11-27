@@ -68,6 +68,12 @@ class Rule // 34
 		return $this;
 	}
 
+	function file(): self
+	{
+		$this->type = "file";
+		return $this;
+	}
+
 	function minValue(int $minValue): self
 	{
 		if ($this->type !== "number")
@@ -85,6 +91,24 @@ class Rule // 34
 
 		$this->maxval = $maxValue;
 		$this->props .= " max=\"$maxValue\"";
+		return $this;
+	}
+
+	function maxSize(int $maxSize): self
+	{
+		if ($this->type !== "file")
+			throw new Exception("maxSize can only be set for file fields");
+
+		$this->props .= " max-size=\"$maxSize\"";
+		return $this;
+	}
+
+	function mediaTypes(array $types): self
+	{
+		if ($this->type !== "file")
+			throw new Exception("mediaTypes can only be set for file fields");
+
+		$this->props .= " accept=\"" . implode(",", $types) . "\"";
 		return $this;
 	}
 
@@ -122,6 +146,9 @@ class Rule // 34
 			$float = floatval($value);
 			if ($this->isDecimal && $float != round($float, 2))
 				return "{$this->name} must be a valid decimal number with at most two decimal places";
+		} elseif ($this->type === "file") {
+			if ($this->required && (!isset($data[$this->field]) || $data[$this->field]["error"] === UPLOAD_ERR_NO_FILE))
+				return "{$this->name} is required";
 		}
 
 		return null;
@@ -129,10 +156,16 @@ class Rule // 34
 
 	function input(array $postData): string
 	{
-		$value = $this->type === "password" ? "" : $postData[$this->field] ?? "";
+		$value =
+			$this->type === "password" or $this->type === "file"
+			? "" : $postData[$this->field] ?? "";
 
-		return "<label for=\"{$this->field}\">{$this->name}</label>"
-			. "<input type=\"{$this->type}\" id=\"{$this->field}\" name=\"{$this->field}\" value=\"$value\"{$this->props}>";
+		$v = "<label for=\"{$this->field}\">{$this->name}</label><input type=\"{$this->type}\" id=\"{$this->field}\" name=\"{$this->field}\"";
+
+		if ($value !== "" && $this->type !== "file")
+			$v .= "value=\"$value\"";
+
+		return  "$v$this->props>";
 	}
 }
 
