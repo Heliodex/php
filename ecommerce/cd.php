@@ -12,19 +12,19 @@ if ($id === null)
 require_once "lib/page.php";
 require_once "lib/cdform.php";
 
-$coverFileRule = new Rule("Cover File")
+$coverFileRule = new Rule("Cover file")
 	->file()
 	->maxSize((int) 5e6) // 5 MB
 	->mediaTypes(["image/*"]);
-$trackNameRule = new Rule("Track Name")
+$trackNameRule = new Rule("Track name")
 	->required()
 	->maxLength(255);
-$trackNumberRule = new Rule("Track Number")
+$trackNumberRule = new Rule("Track number")
 	->required()
 	->number()
 	->minValue(1)
 	->maxValue(99);
-$trackDurationRule = new Rule("Track Duration")
+$trackDurationRule = new Rule("Track duration")
 	->required();
 
 require_once "lib/database.php";
