@@ -53,10 +53,15 @@ HTML;
 
 	function __destruct()
 	{
+		// get page generation time
+		global $_PAGE_START_TIME;
+		$time = round((microtime(true) - $_PAGE_START_TIME) * 1000, 2);
+
 		echo <<<HTML
 	</main>
 	<footer>
 		<p>🅮 2025 My E-commerce Site</p>
+		<p>Page generated in {$time}ms</p>
 	</footer>
 </body>
 

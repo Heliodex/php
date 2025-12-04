@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// set current time as global
+$_PAGE_START_TIME = microtime(true);
+
 class Session
 {
 	function start(): void
