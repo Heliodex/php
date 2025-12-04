@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS cd (
 	id VARCHAR(36) PRIMARY KEY, -- created externally
 	title VARCHAR(255) NOT NULL,
 	label VARCHAR(255) NOT NULL,
+	coverDescription TEXT,
 	year SMALLINT(4) NOT NULL, -- lol year 32768 problem
 	artist VARCHAR(255) NOT NULL,
 	price DECIMAL(10,2) NOT NULL

@@ -74,6 +74,12 @@ class Rule // 34
 		return $this;
 	}
 
+	function textarea(): self
+	{
+		$this->type = "textarea";
+		return $this;
+	}
+
 	function minValue(int $minValue): self
 	{
 		if ($this->type !== "number")
@@ -160,7 +166,12 @@ class Rule // 34
 			$this->type === "password" or $this->type === "file"
 			? "" : $postData[$this->field] ?? "";
 
-		$v = "<label for=\"{$this->field}\">{$this->name}</label><input type=\"{$this->type}\" id=\"{$this->field}\" name=\"{$this->field}\"";
+		$v = "<label for=\"{$this->field}\">{$this->name}</label>";
+
+		if ($this->type === "textarea")
+			return "$v<textarea id=\"{$this->field}\" name=\"{$this->field}\"$this->props>$value</textarea>";
+
+		$v .= "<input type=\"{$this->type}\" id=\"{$this->field}\" name=\"{$this->field}\"";
 
 		if ($value !== "" && $this->type !== "file")
 			$v .= "value=\"$value\"";

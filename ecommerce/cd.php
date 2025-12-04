@@ -16,6 +16,9 @@ $coverFileRule = new Rule("Cover file")
 	->file()
 	->maxSize((int) 5e6) // 5 MB
 	->mediaTypes(["image/*"]);
+$coverDescriptionRule = new Rule("Cover description")
+	->textarea()
+	->maxLength(1000);
 $trackNameRule = new Rule("Track name")
 	->required()
 	->maxLength(255);
@@ -75,27 +78,36 @@ $trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
 
-$coverForm = new Form("image", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [$coverFileRule], function () use ($DB) {
+$coverForm = new Form("image", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [$coverFileRule, $coverDescriptionRule], function () use ($DB) {
 	$cdId = $_GET["id"] ?? null;
 	if ($cdId === null)
 		return;
 
 	$file = $_FILES["cover_file"] ?? null;
-	if ($file === null || $file["error"] !== UPLOAD_ERR_OK)
-		return ["cover" => "File upload error"];
+	if ($file !== null) {
+		if ($file["error"] !== UPLOAD_ERR_OK)
+			return ["cover" => "File upload error"];
 
-	$coverData = file_get_contents($file["tmp_name"]);
-	if ($coverData === false)
-		return ["cover" => "Failed to read uploaded file"];
+		$coverData = file_get_contents($file["tmp_name"]);
+		if ($coverData === false)
+			return ["cover" => "Failed to read uploaded file"];
 
-	// write file to covers/<cdId>
-	$coverDir = __DIR__ . "/covers";
-	if (!is_dir($coverDir) && !mkdir($coverDir, 0755, true))
-		return ["cover" => "Failed to create directory $coverDir"];
+		// write file to covers/<cdId>
+		$coverDir = __DIR__ . "/covers";
+		if (!is_dir($coverDir) && !mkdir($coverDir, 0755, true))
+			return ["cover" => "Failed to create directory $coverDir"];
 
-	$coverPath = "$coverDir/$cdId";
-	if (!move_uploaded_file($file["tmp_name"], $coverPath))
-		return ["cover" => "Failed to save cover image to $coverPath"];
+		$coverPath = "$coverDir/$cdId";
+		if (!move_uploaded_file($file["tmp_name"], $coverPath))
+			return ["cover" => "Failed to save cover image to $coverPath"];
+	}
+
+	$coverDescription = $_POST["cover_description"] ?? null;
+	$query = $DB->prepare("UPDATE cd SET coverDescription = :coverDescription WHERE id = :id");
+	$query->execute([
+		":coverDescription" => $coverDescription,
+		":id" => $cdId,
+	]);
 
 	header("Location: /cd.php?id=" . urlencode($cdId));
 });
@@ -157,14 +169,20 @@ $_ = new Page("CD Details");
 
 <div class="bottomgap">
 	<img src="cover.php?id=<?= $urlid ?>" alt="CD Cover Image" class="cover">
+
+	<p><?= htmlspecialchars($cd["coverDescription"] ?? "") ?: "<i>No description available</i>" ?></p>
 </div>
 
 <form method="post" action="?/image&id=<?= $urlid ?>" enctype="multipart/form-data" class="table bottomgap">
 	<fieldset>
 		<?= $coverFileRule->input($_FILES) ?>
-		<button class="smallbtn">Upload Image</button>
+		<?= $coverForm->errorNotification("cover") ?>
 	</fieldset>
-	<?= $coverForm->errorNotification("cover") ?>
+	<fieldset>
+		<?= $coverDescriptionRule->input($formpost) ?>
+		<?= $coverForm->errorNotification("coverDescription") ?>
+	</fieldset>
+	<button class="smallbtn">Update cover</button>
 </form>
 
 <form method="post" action="?/delete&id=<?= $urlid ?>" class="bottomgap">
@@ -248,5 +266,5 @@ $_ = new Page("CD Details");
 		<?= $trackForm->errorNotification("track_duration") ?>
 	</fieldset>
 
-	<button class="smallbtn">Add Track</button>
+	<button class="smallbtn">Add track</button>
 </form>
