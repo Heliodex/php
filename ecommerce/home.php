@@ -17,7 +17,7 @@ $_ = new Page("Home");
 
 <div class="bottomgap">
 	<form class="table inline-form">
-		<label for="search">Search for CDs by title, label, or artist:</label>
+		<label for="search">Search for CDs by title, label, or artist</label>
 		<fieldset>
 			<input
 				type="text"
@@ -26,15 +26,14 @@ $_ = new Page("Home");
 				minlength="1"
 				maxlength="100"
 				hx-get="/cdQuery.php"
-				hx-trigger="input changed, keyup[key=='Enter']"
-				hx-target="#results"
-				hx-indicator="#indicator">
+				hx-trigger="input changed"
+				hx-target="#results">
 			<button>Search</button>
 		</fieldset>
 	</form>
 </div>
 
-<h2>CDs in Database</h2>
+<h2>CDs in database</h2>
 
 <div id="results">
 	<?php require "cdQuery.php"; ?>
