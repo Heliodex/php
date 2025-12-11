@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+require_once "lib/session.php";
+new Session(true);
+
 require_once "lib/database.php";
 
 $searchQuery = $_GET["search"] ?? "";
@@ -18,9 +21,7 @@ if ($searchQuery !== "")
 $query->execute();
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 
-?>
-
-<?php if (count($rows) !== 0) { ?>
+if (count($rows) !== 0) { ?>
 	<table>
 		<colgroup>
 			<col style="width: 15%">
