@@ -163,8 +163,8 @@ class Rule // 34
 	function input(array $postData): string
 	{
 		$value =
-			$this->type === "password" or $this->type === "file"
-			? "" : $postData[$this->field] ?? "";
+			($this->type === "password" or $this->type === "file")
+			? "" : ($postData[$this->field] ?? "");
 
 		$v = "<label for=\"{$this->field}\">{$this->name}</label>";
 

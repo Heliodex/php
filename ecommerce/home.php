@@ -5,16 +5,41 @@ declare(strict_types=1);
 require_once "lib/session.php";
 new Session(true);
 
-require_once "lib/database.php";
+require_once "lib/form.php";
 require_once "lib/page.php";
+
+$searchRule = new Rule("Search")
+	->minLength(1)
+	->maxLength(100);
+
+require_once "lib/database.php";
 
 $_ = new Page("Home");
 
-$query = $DB->query("SELECT * FROM cd");
+$searchQuery = $_GET["search"] ?? "";
+
+$qtext = "SELECT * FROM cd";
+if ($searchQuery !== "")
+	$qtext .= " WHERE title LIKE :search OR label LIKE :search OR artist LIKE :search";
+
+$query = $DB->prepare($qtext);
+
+if ($searchQuery !== "")
+	$query->bindValue(":search", "%$searchQuery%", PDO::PARAM_STR);
+
+$query->execute();
 $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <h1>Home</h1>
+
+<h2>Search CDs</h2>
+<form class="table bottomgap">
+	<fieldset>
+		<?= $searchRule->input($_GET) ?>
+		<button class="smallbtn">Search</button>
+	</fieldset>
+</form>
 
 <h2>CDs in Database</h2>
 
@@ -43,5 +68,7 @@ $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 			<?php } ?>
 		</tbody>
 	</table>
-<?php } else
+<?php } else if ($searchQuery !== "")
+	echo "<p>No CDs found matching your search.</p>";
+else
 	echo "<p>No CDs found in the database.</p>";
