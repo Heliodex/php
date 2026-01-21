@@ -74,8 +74,6 @@ $trackForm = new Form("track", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 		":duration" => $duration,
 		":cdId" => $_GET["id"],
 	]);
-
-	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
 
 $coverForm = new Form("image", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [$coverFileRule, $coverDescriptionRule], function () use ($DB) {
@@ -84,7 +82,8 @@ $coverForm = new Form("image", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [$cove
 		return;
 
 	$file = $_FILES["cover_file"] ?? null;
-	if ($file !== null) {
+	error_log("file " . print_r($file, true));
+	if ($file !== null && $file["error"] !== UPLOAD_ERR_NO_FILE) {
 		if ($file["error"] !== UPLOAD_ERR_OK)
 			return ["cover" => "File upload error"];
 
@@ -108,8 +107,6 @@ $coverForm = new Form("image", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [$cove
 		":coverDescription" => $coverDescription,
 		":id" => $cdId,
 	]);
-
-	header("Location: /cd.php?id=" . urlencode($cdId));
 });
 
 new Form("delete", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () use ($DB) {
@@ -130,8 +127,6 @@ new Form("deletetrack", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function 
 
 	$query = $DB->prepare("DELETE FROM track WHERE id = ?");
 	$query->execute([$trackId]);
-
-	header("Location: /cd.php?id=" . urlencode($_GET["id"]));
 });
 
 // select CD and associated tracks

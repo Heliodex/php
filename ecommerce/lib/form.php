@@ -202,10 +202,8 @@ class Form
 		if (!empty($this->errors)) return;
 
 		$result = ($this->callback)();
-		if ($result === null)
-			die;
-
-		$this->errors = array_merge($this->errors, $result);
+		if ($result !== null)
+			$this->errors = array_merge($this->errors, $result);
 	}
 
 	function isValid(): bool
