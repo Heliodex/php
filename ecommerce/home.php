@@ -6,6 +6,11 @@ require_once "lib/session.php";
 new Session(true);
 
 require_once "lib/form.php";
+
+$form = new Form("add", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [], function () {
+	header("Location: home.php");
+});
+
 require_once "lib/page.php";
 
 $_ = new Page("Home");
