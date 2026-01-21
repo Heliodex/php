@@ -42,6 +42,7 @@ $form = new Form("register", $_SERVER["REQUEST_METHOD"], $_GET, $_POST, [
 		":password" => $hash,
 	]);
 
+	$query->nextRowset();
 	$user = $query->fetch(PDO::FETCH_ASSOC);
 	$_SESSION["user"] = $user["id"];
 });
