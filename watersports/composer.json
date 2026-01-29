@@ -4,9 +4,10 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "amphp/http-client": "5",
         "doctrine/doctrine-bundle": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6",
