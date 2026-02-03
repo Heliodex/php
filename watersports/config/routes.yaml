@@ -12,4 +12,4 @@ controllers:
 
 index:
     path: /
-    controller: App\Controller\HomeController::index
+    controller: App\Controller\DefaultController::index
