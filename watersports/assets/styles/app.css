@@ -1,3 +1,6 @@
-body {
-	background-color: skyblue;
+:root {
+	font-family: sans-serif;
+
+	color: white;
+	background: black;
 }
