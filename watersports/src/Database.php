@@ -4,6 +4,16 @@ namespace App;
 
 class Database
 {
+	private static $init = <<<SQL
+	CREATE TABLE IF NOT EXISTS user (
+		id VARCHAR(36) PRIMARY KEY DEFAULT (uuid()),
+		created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		username TEXT NOT NULL UNIQUE,
+		email TEXT NOT NULL UNIQUE,
+		password TEXT NOT NULL
+	);
+	SQL;
+
 	// get path from environment variable
 	public function getPath()
 	{
@@ -19,7 +29,7 @@ class Database
 		return $databaseUrl;
 	}
 
-	public \PDO $pdo;
+	private static ?\PDO $pdo;
 
 	public function __construct()
 	{
@@ -39,17 +49,18 @@ class Database
 				touch($path);
 		}
 
-		$this->pdo = new \PDO(
+		self::$pdo = new \PDO(
 			$databasePath,
 			$_ENV["DATABASE_USER"] ?? null,
 			$_ENV["DATABASE_PASSWORD"] ?? null,
 			[\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
 		);
+		self::$pdo->exec(self::$init);
 	}
 
 	public function getRandomNumber(): int
 	{
-		$stmt = $this->pdo->query("SELECT RANDOM() % 100 AS number");
+		$stmt = self::$pdo->query("SELECT RANDOM() % 100 AS number");
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		return (int)$row["number"];
 	}
