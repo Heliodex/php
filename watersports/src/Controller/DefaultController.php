@@ -11,7 +11,9 @@ class DefaultController extends AbstractController
 	#[Route("/")]
 	public function index(): Response
 	{
-		$number = random_int(0, 100);
+		$DB = new \App\Database();
+		
+		$number = $DB->getRandomNumber();
 
 		return $this->render("index.html.twig", [
 			"number" => $number,
