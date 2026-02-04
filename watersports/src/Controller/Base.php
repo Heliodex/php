@@ -16,7 +16,7 @@ class Base extends AbstractController
 
 		return parent::render(
 			$view,
-			array_merge($parameters, $newParams),
+			[...$parameters, ...$newParams],
 			$response
 		);
 	}

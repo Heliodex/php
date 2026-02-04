@@ -62,10 +62,10 @@ class Database
 	{
 		$stmt = self::$pdo->query("SELECT RANDOM() % 100 AS number");
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
-		return (int)$row["number"];
+		return (int) $row["number"];
 	}
 
-	final public static  function getPdo(): \PDO
+	final public static function getPdo(): \PDO
 	{
 		return self::$pdo;
 	}
