@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Base extends AbstractController
 {
-	protected function render(string $view, array $parameters = [], ?Response $response = null): Response
+	final protected function render(string $view, array $parameters = [], ?Response $response = null): Response
 	{
 		// add nav user parameter if not already set
 		$newParams = [

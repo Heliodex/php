@@ -15,7 +15,7 @@ class Database
 	SQL;
 
 	// get path from environment variable
-	public function getPath()
+	private static function getPath()
 	{
 		$databaseUrl = $_ENV["DATABASE_URL"];
 		if ($databaseUrl === false)
@@ -31,9 +31,9 @@ class Database
 
 	private static ?\PDO $pdo;
 
-	public function __construct()
+	final public function __construct()
 	{
-		$databasePath = $this->getPath();
+		$databasePath = self::getPath();
 
 		// check if database file exists, if not create it
 
@@ -58,10 +58,15 @@ class Database
 		self::$pdo->exec(self::$init);
 	}
 
-	public function getRandomNumber(): int
+	final public static function getRandomNumber(): int
 	{
 		$stmt = self::$pdo->query("SELECT RANDOM() % 100 AS number");
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		return (int)$row["number"];
+	}
+
+	final public static  function getPdo(): \PDO
+	{
+		return self::$pdo;
 	}
 }

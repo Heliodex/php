@@ -9,7 +9,7 @@ class Log
 {
 	private static ?Logger $logger = null;
 
-	public static function logger(): Logger
+	final public static function logger(): Logger
 	{
 		if (self::$logger === null) {
 			self::$logger = new Logger("app");
@@ -19,7 +19,7 @@ class Log
 		return self::$logger;
 	}
 
-	public static function info(string $message): void
+	final public static function info(string $message): void
 	{
 		self::logger()->info($message);
 	}

@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DefaultController extends Base
 {
 	#[Route("/")]
-	public function index(): Response
+	final public function index(): Response
 	{
 		$DB = new \App\Database();
 
