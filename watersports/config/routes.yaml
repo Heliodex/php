@@ -17,3 +17,7 @@ index:
 login:
     path: /login
     controller: App\Controller\LoginController::main
+
+register:
+    path: /register
+    controller: App\Controller\RegisterController::index
