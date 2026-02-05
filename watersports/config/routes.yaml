@@ -12,8 +12,8 @@ controllers:
 
 index:
     path: /
-    controller: App\Controller\DefaultController::index
+    controller: App\Controller\DefaultController::main
 
 login:
     path: /login
-    controller: App\Controller\LoginController::index
+    controller: App\Controller\LoginController::main

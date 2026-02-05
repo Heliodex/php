@@ -138,13 +138,12 @@ a {
 	}
 }
 
-nav {
-	ul {
-		padding: 0;
-		list-style: none;
-		display: flex;
-		gap: 1rem;
-	}
+nav ul {
+	padding: 0;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: var(--size-3);
 }
 
 header {
@@ -152,18 +151,29 @@ header {
 }
 
 form {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
+	ul {
+		background: hsla(0, 100%, 71%, 0.5);
+		color: var(--red-5);
+		font-size: var(--font-size-0);
+		padding: var(--size-2) var(--size-3);
+		border-radius: var(--size-1);
 
-	&.table fieldset {
-		flex-direction: row;
-		align-items: center;
+		 list-style-position: inside;
+	}
 
-		label {
-			min-width: 8rem;
+	> div {
+		display: flex;
+		flex-direction: column;
+		gap: var(--size-3);
+
+		/* omg I'm actually using the :has() selector */
+		> div:has(input) {
+			display: flex;
+			flex-direction: column;
+			gap: var(--size-2);
 		}
 	}
+
 }
 
 .rowform {
@@ -185,11 +195,6 @@ ul.table li span {
 	}
 }
 
-nav ul {
-	display: flex;
-	align-items: center;
-}
-
 .cover {
 	border: 1px solid white;
 	width: 200px;
@@ -206,21 +211,10 @@ table {
 	}
 }
 
-.formerror {
-	width: fit-content;
-	display: inline;
-	background-color: hsla(0, 100%, 71%, 0.5); /* red-5 */
-
-	color: var(--red-5);
-	font-size: var(--font-size-0);
-	padding: var(--size-2) var(--size-3);
-	border-radius: var(--size-1);
-}
-
 .bottomgap {
-	padding-bottom: 2rem;
+	padding-bottom: var(--size-7);
 }
 
 footer {
-	padding-top: 2rem;
+	padding-top: var(--size-7);
 }

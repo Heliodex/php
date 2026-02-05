@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 class Log
 {
