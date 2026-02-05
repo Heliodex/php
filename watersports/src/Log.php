@@ -11,11 +11,12 @@ class Log
 
 	final public static function logger(): Logger
 	{
-		if (self::$logger === null) {
-			self::$logger = new Logger("app");
-			self::$logger->pushHandler(new StreamHandler("php://stdout"));
-			// self::info("Logger initialised.");
-		}
+		if (self::$logger !== null)
+			return self::$logger;
+
+		self::$logger = new Logger("app");
+		self::$logger->pushHandler(new StreamHandler("php://stdout"));
+
 		return self::$logger;
 	}
 

@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Entity\User;
+
 class Database
 {
 	private static $init = <<<SQL
@@ -29,10 +31,13 @@ class Database
 		return $databaseUrl;
 	}
 
-	private static ?\PDO $pdo;
+	private static ?\PDO $pdo = null;
 
-	final public function __construct()
+	final public static function pdo()
 	{
+		if (self::$pdo !== null)
+			return self::$pdo;
+
 		$databasePath = self::getPath();
 
 		// check if database file exists, if not create it
@@ -49,6 +54,10 @@ class Database
 				touch($path);
 		}
 
+		// check if pdo is already initialised, if not initialise it
+		if (self::$pdo !== null)
+			return;
+
 		self::$pdo = new \PDO(
 			$databasePath,
 			$_ENV["DATABASE_USER"] ?? null,
@@ -56,17 +65,49 @@ class Database
 			[\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
 		);
 		self::$pdo->exec(self::$init);
+
+		return self::$pdo;
 	}
 
 	final public static function getRandomNumber(): int
 	{
-		$stmt = self::$pdo->query("SELECT RANDOM() % 100 AS number");
+		$stmt = self::pdo()->query("SELECT RANDOM() % 100 AS number");
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		return (int) $row["number"];
 	}
 
-	final public static function getPdo(): \PDO
+	final public static function getUserById(string $id): ?User
 	{
-		return self::$pdo;
+		$stmt = self::pdo()->prepare("SELECT * FROM user WHERE id = :id");
+		$stmt->execute(["id" => $id]);
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+		if (!$row)
+			return null;
+
+		return new User(
+			$row["id"],
+			new \DateTime($row["created"]),
+			$row["username"],
+			$row["password"]
+		);
+	}
+
+	final public static function checkUser(string $username, string $password): ?User
+	{
+		$stmt = self::pdo()->prepare("SELECT * FROM user WHERE username = :username");
+		$stmt->execute(["username" => $username]);
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+		if (!$row)
+			return null;
+
+		if (!password_verify($password, $row["password"]))
+			return null;
+
+		return new User(
+			$row["id"],
+			new \DateTime($row["created"]),
+			$row["username"],
+			$row["password"]
+		);
 	}
 }
