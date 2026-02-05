@@ -8,7 +8,7 @@ class Database
 {
 	private static $init = <<<SQL
 	CREATE TABLE IF NOT EXISTS user (
-		id VARCHAR(36) PRIMARY KEY DEFAULT (uuid()),
+		id BLOB PRIMARY KEY DEFAULT (randomblob(32)),
 		created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		username TEXT NOT NULL UNIQUE,
 		email TEXT NOT NULL UNIQUE,
@@ -17,7 +17,7 @@ class Database
 	SQL;
 
 	// get path from environment variable
-	private static function getPath()
+	private static function getPath(): string
 	{
 		$databaseUrl = $_ENV["DATABASE_URL"];
 		if ($databaseUrl === false)
@@ -33,7 +33,7 @@ class Database
 
 	private static ?\PDO $pdo = null;
 
-	final public static function pdo()
+	final public static function pdo(): \PDO
 	{
 		if (self::$pdo !== null)
 			return self::$pdo;
@@ -53,10 +53,6 @@ class Database
 				// create empty file
 				touch($path);
 		}
-
-		// check if pdo is already initialised, if not initialise it
-		if (self::$pdo !== null)
-			return;
 
 		self::$pdo = new \PDO(
 			$databasePath,
@@ -109,5 +105,20 @@ class Database
 			$row["username"],
 			$row["password"]
 		);
+	}
+
+	final public static function registerUser(string $username, string $email, string $password): bool
+	{
+		try {
+			$stmt = self::pdo()->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)");
+			return $stmt->execute([
+				"username" => $username,
+				"email" => $email,
+				"password" => password_hash($password, PASSWORD_ARGON2ID),
+			]);
+		} catch (\PDOException $e) {
+			Log::error("Database error during registration: " . $e->getMessage());
+			return false;
+		}
 	}
 }

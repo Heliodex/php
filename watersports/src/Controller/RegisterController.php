@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Register;
 use App\Form\Type\RegisterType;
-use App\{Database, Log};
+use App\{Database, Log, function requireLogout};
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,6 +14,10 @@ class RegisterController extends Base
 	#[Route("/register")]
 	final public function index(Request $request): Response
 	{
+		$redir = requireLogout($request, fn(string $r) => $this->redirectToRoute($r));
+		if ($redir)
+			return $redir;
+
 		$register = new Register();
 		$form = $this->createForm(RegisterType::class, $register);
 

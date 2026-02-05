@@ -21,3 +21,7 @@ login:
 register:
     path: /register
     controller: App\Controller\RegisterController::index
+
+home:
+    path: /home
+    controller: App\Controller\HomeController::main

@@ -2,7 +2,7 @@
 
 namespace App\Form\Type;
 
-use App\Entity\Login;
+use App\Entity\Register;
 use Symfony\Component\Form\Extension\Core\Type\{EmailType, PasswordType, SubmitType, TextType};
 use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +22,7 @@ class RegisterType extends AbstractType
 	final public function configureOptions(OptionsResolver $resolver): void
 	{
 		$resolver->setDefaults([
-			"data_class" => Login::class,
+			"data_class" => Register::class,
 		]);
 	}
 }

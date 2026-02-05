@@ -24,4 +24,9 @@ class Log
 	{
 		self::logger()->info($message);
 	}
+
+	final public static function error(string $message): void
+	{
+		self::logger()->error($message);
+	}
 }

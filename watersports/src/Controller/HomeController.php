@@ -2,22 +2,22 @@
 
 namespace App\Controller;
 
-use App\{Database, function requireLogout};
+use App\{Database, function requireLogin};
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
 
-class DefaultController extends Base
+class HomeController extends Base
 {
-	#[Route("/")]
+	#[Route("/home")]
 	final public function main(Request $request): Response
 	{
-		$redir = requireLogout($request, fn(string $r) => $this->redirectToRoute($r));
+		$redir = requireLogin($request, fn(string $r) => $this->redirectToRoute($r));
 		if ($redir)
 			return $redir;
 
 		$number = Database::getRandomNumber();
 
-		return $this->render("index.html.twig", [
+		return $this->render("home.html.twig", [
 			"number" => $number,
 		]);
 	}
