@@ -14,7 +14,7 @@ class LoginController extends Base
 	#[Route("/login")]
 	final public function index(Request $request): Response
 	{
-		$redir = requireLogout($request, fn(string $r) => $this->redirectToRoute($r));
+		$redir = requireLogout($request, $this->redirectToRoute(...));
 		if ($redir)
 			return $redir;
 

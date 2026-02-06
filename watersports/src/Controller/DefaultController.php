@@ -11,7 +11,7 @@ class DefaultController extends Base
 	#[Route("/")]
 	final public function main(Request $request): Response
 	{
-		$redir = requireLogout($request, fn(string $r) => $this->redirectToRoute($r));
+		$redir = requireLogout($request, $this->redirectToRoute(...));
 		if ($redir)
 			return $redir;
 

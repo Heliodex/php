@@ -11,7 +11,7 @@ class HomeController extends Base
 	#[Route("/home")]
 	final public function main(Request $request): Response
 	{
-		$redir = requireLogin($request, fn(string $r) => $this->redirectToRoute($r));
+		$redir = requireLogin($request, $this->redirectToRoute(...));
 		if ($redir)
 			return $redir;
 
