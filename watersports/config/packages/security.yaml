@@ -7,6 +7,9 @@ security:
     providers:
         users_in_memory: { memory: null }
 
+        users:
+            id: App\Security\UserProvider
+
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
@@ -15,6 +18,10 @@ security:
         main:
             lazy: true
             provider: users_in_memory
+
+            form_login:
+                login_path: login
+                check_path: login
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall

@@ -25,3 +25,7 @@ register:
 home:
     path: /home
     controller: App\Controller\HomeController::main
+
+logout:
+    path: /logout
+    controller: App\Controller\LogoutController::index

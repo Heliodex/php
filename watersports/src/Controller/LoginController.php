@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Login;
 use App\Form\Type\LoginType;
 use App\{Database, Log, function requireLogout};
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class LoginController extends Base
 {
 	#[Route("/login")]
-	final public function index(Request $request): Response
+	final public function index(Request $request, Security $security): Response
 	{
 		$redir = requireLogout($request, $this->redirectToRoute(...));
 		if ($redir)
@@ -34,12 +35,8 @@ class LoginController extends Base
 			if ($user) {
 				Log::info("Login successful for username {$username}");
 
-				// set session
-				$session = $request->getSession();
-				$session->set("id", $user->id);
-
-				// Redirect to a secure page or dashboard
-				return $this->redirectToRoute("home");
+				// set session and return to logged-in page
+				return $security->login($user);
 			}
 
 			// add error message

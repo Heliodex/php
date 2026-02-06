@@ -7,5 +7,9 @@
             Username:
             {{ user }}
         </li>
+
+        <form method="post" action="{{ path('logout') }}" class="inline-form">
+            <button>Log out</button>
+        </form>
     </ul>
 </nav>
