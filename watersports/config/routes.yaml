@@ -12,11 +12,11 @@ controllers:
 
 index:
     path: /
-    controller: App\Controller\DefaultController::main
+    controller: App\Controller\DefaultController::index
 
 login:
     path: /login
-    controller: App\Controller\LoginController::main
+    controller: App\Controller\LoginController::index
 
 register:
     path: /register
@@ -24,7 +24,7 @@ register:
 
 home:
     path: /home
-    controller: App\Controller\HomeController::main
+    controller: App\Controller\HomeController::index
 
 logout:
     path: /logout

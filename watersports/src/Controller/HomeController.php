@@ -2,19 +2,17 @@
 
 namespace App\Controller;
 
-use App\{Database, function requireLogin};
-use Symfony\Component\HttpFoundation\{Request, Response};
+use App\Database;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class HomeController extends Base
 {
 	#[Route("/home")]
-	final public function main(Request $request): Response
+	#[IsGranted("ROLE_USER")]
+	final public function index(): Response
 	{
-		$redir = requireLogin($request, $this->redirectToRoute(...));
-		if ($redir)
-			return $redir;
-
 		$number = Database::getRandomNumber();
 
 		return $this->render("home.html.twig", [

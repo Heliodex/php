@@ -3,19 +3,16 @@
 namespace App\Controller;
 
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use function App\requireLogin;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class LogoutController extends Base
 {
 	#[Route("/logout", methods: ["POST"])]
-	final public function index(Request $request, Security $security): Response
+	#[IsGranted("ROLE_USER")]
+	final public function index(Security $security): Response
 	{
-		$redir = requireLogin($request, $this->redirectToRoute(...));
-		if ($redir)
-			return $redir;
-
 		return $security->logout();
 	}
 }

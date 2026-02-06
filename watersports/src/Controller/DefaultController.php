@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DefaultController extends Base
 {
 	#[Route("/")]
-	final public function main(Request $request): Response
+	final public function index(Request $request): Response
 	{
 		$redir = requireLogout($request, $this->redirectToRoute(...));
 		if ($redir)
