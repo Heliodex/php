@@ -8,7 +8,7 @@ class Database
 {
 	private static $init = <<<SQL
 	CREATE TABLE IF NOT EXISTS user (
-		id BLOB PRIMARY KEY DEFAULT (randomblob(32)),
+		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
 		created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		username TEXT NOT NULL UNIQUE,
 		email TEXT NOT NULL UNIQUE,
@@ -35,7 +35,7 @@ class Database
 
 	final public static function pdo(): \PDO
 	{
-		if (self::$pdo !== null)
+		if (self::$pdo)
 			return self::$pdo;
 
 		$databasePath = self::getPath();
@@ -100,7 +100,7 @@ class Database
 			return null;
 
 		return new User(
-			$row["id"],
+			bin2hex($row["id"]),
 			new \DateTime($row["created"]),
 			$row["username"],
 			$row["password"]

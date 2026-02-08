@@ -16,7 +16,9 @@ class RegisterType extends AbstractType
 			->add("email", EmailType::class)
 			->add("password", PasswordType::class)
 			->add("confirmPassword", PasswordType::class)
-			->add("submit", SubmitType::class);
+			->add("submit", SubmitType::class, [
+				"label" => "Register",
+			]);
 	}
 
 	final public function configureOptions(OptionsResolver $resolver): void

@@ -14,7 +14,9 @@ class LoginType extends AbstractType
 		$builder
 			->add("username", TextType::class)
 			->add("password", PasswordType::class)
-			->add("submit", SubmitType::class);
+			->add("submit", SubmitType::class, [
+				"label" => "Log in",
+			]);
 	}
 
 	final public function configureOptions(OptionsResolver $resolver): void

@@ -9,9 +9,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class LogoutController extends Base
 {
-	#[Route("/logout", methods: ["POST"])]
-	#[IsGranted("ROLE_USER")]
-	final public function index(Security $security): Response
+	#[Route("/logout", methods: ["POST"], name: "logout")]
+	#[IsGranted("IS_AUTHENTICATED")]
+	final public function logout(Security $security): Response
 	{
 		return $security->logout();
 	}

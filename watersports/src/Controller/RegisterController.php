@@ -2,21 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Register;
+use App\Entity\{Register, User};
 use App\Form\Type\RegisterType;
-use App\{Database, Log, function requireLogout};
+use App\{Database, Log};
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class RegisterController extends Base
 {
-	#[Route("/register")]
-	final public function index(Request $request): Response
+	#[Route("/register", name: "register")]
+	final public function register(#[CurrentUser] ?User $user, Request $request): Response
 	{
-		$redir = requireLogout($request, $this->redirectToRoute(...));
-		if ($redir)
-			return $redir;
+		// Redirect authenticated users to /home
+		if ($user)
+			return $this->redirectToRoute("home");
+
 
 		$register = new Register();
 		$form = $this->createForm(RegisterType::class, $register);
@@ -48,7 +50,7 @@ class RegisterController extends Base
 
 			Log::info("Registration successful for username {$username}");
 			// Redirect to login page after successful registration
-			return $this->redirectToRoute("login");
+			return $this->redirectToRoute("home");
 		}
 
 		return $this->render("register.html.twig", [

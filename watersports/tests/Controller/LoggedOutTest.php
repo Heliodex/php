@@ -32,6 +32,8 @@ class LoggedOutTest extends WebTestCase
 		$client = self::createClient();
 		$client->request("GET", "/home");
 		$this->assertResponseRedirects("/login");
+		$client->followRedirect();
+		$this->assertResponseIsSuccessful();
 	}
 
 	final public function testLogout(): void
@@ -39,5 +41,7 @@ class LoggedOutTest extends WebTestCase
 		$client = self::createClient();
 		$client->request("POST", "/logout");
 		$this->assertResponseRedirects("/login");
+		$client->followRedirect();
+		$this->assertResponseIsSuccessful();
 	}
 }

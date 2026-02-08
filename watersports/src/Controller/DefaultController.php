@@ -2,18 +2,20 @@
 
 namespace App\Controller;
 
-use App\{Database, function requireLogout};
-use Symfony\Component\HttpFoundation\{Request, Response};
+use App\Database;
+use App\Entity\User;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class DefaultController extends Base
 {
-	#[Route("/")]
-	final public function index(Request $request): Response
+	#[Route("/", name: "index")]
+	final public function index(#[CurrentUser] ?User $user): Response
 	{
-		$redir = requireLogout($request, $this->redirectToRoute(...));
-		if ($redir)
-			return $redir;
+		// Redirect authenticated users to /home
+		if ($user)
+			return $this->redirectToRoute("home");
 
 		$number = Database::getRandomNumber();
 

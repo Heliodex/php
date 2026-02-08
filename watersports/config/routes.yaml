@@ -9,23 +9,3 @@
 
 controllers:
     resource: routing.controllers
-
-index:
-    path: /
-    controller: App\Controller\DefaultController::index
-
-login:
-    path: /login
-    controller: App\Controller\LoginController::index
-
-register:
-    path: /register
-    controller: App\Controller\RegisterController::index
-
-home:
-    path: /home
-    controller: App\Controller\HomeController::index
-
-logout:
-    path: /logout
-    controller: App\Controller\LogoutController::index

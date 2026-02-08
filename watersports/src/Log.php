@@ -11,7 +11,7 @@ class Log
 
 	final public static function logger(): Logger
 	{
-		if (self::$logger !== null)
+		if (self::$logger)
 			return self::$logger;
 
 		self::$logger = new Logger("app");
