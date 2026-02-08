@@ -49,6 +49,7 @@ class RegisterController extends Base
 			}
 
 			Log::info("Registration successful for username {$username}");
+
 			// Redirect to login page after successful registration
 			return $this->redirectToRoute("home");
 		}

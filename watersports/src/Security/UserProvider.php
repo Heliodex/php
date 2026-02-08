@@ -18,11 +18,11 @@ class UserProvider implements UserProviderInterface
 	 *
 	 * @throws UserNotFoundException if the user is not found
 	 */
-	final public function loadUserByIdentifier(string $identifier): UserInterface
+	final public function loadUserByIdentifier(string $username): UserInterface
 	{
-		$user = Database::getUserById($identifier);
+		$user = Database::getUserByUsername($username);
 		if (!$user instanceof UserInterface)
-			throw new UserNotFoundException(sprintf('User with identifier "%s" not found.', $identifier));
+			throw new UserNotFoundException(sprintf('User with username "%s" not found.', $username));
 
 		return $user;
 	}

@@ -72,10 +72,10 @@ class Database
 		return (int) $row["number"];
 	}
 
-	final public static function getUserById(string $id): ?User
+	final public static function getUserByUsername(string $username): ?User
 	{
-		$stmt = self::pdo()->prepare("SELECT * FROM user WHERE id = :id");
-		$stmt->execute(["id" => $id]);
+		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE username = :username");
+		$stmt->execute(["username" => $username]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)
 			return null;
@@ -83,7 +83,7 @@ class Database
 		return new User(
 			$row["id"],
 			new \DateTime($row["created"]),
-			$row["username"],
+			$username,
 			$row["password"]
 		);
 	}
