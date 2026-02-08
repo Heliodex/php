@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\{PasswordType, SubmitType, TextTy
 use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LoginType extends AbstractType
+final class LoginType extends AbstractType
 {
 	final public function buildForm(FormBuilderInterface $builder, array $_): void
 	{

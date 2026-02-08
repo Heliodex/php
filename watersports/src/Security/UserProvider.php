@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class UserProvider implements UserProviderInterface
+final class UserProvider implements UserProviderInterface
 {
 	/**
 	 * Symfony calls this method if you use features like switch_user

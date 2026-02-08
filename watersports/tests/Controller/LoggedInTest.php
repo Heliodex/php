@@ -6,7 +6,7 @@ use App\Database;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class LoggedInTest extends WebTestCase
+final class LoggedInTest extends WebTestCase
 {
 	private function logIn(KernelBrowser $client): void
 	{
@@ -18,27 +18,7 @@ class LoggedInTest extends WebTestCase
 			$testUser = Database::checkUser("testuser", "testpassword");
 		}
 
-		// First, get the login form to extract the CSRF token
-		$client->request("GET", "/login");
-		$crawler = $client->getCrawler();
-
-		// Extract CSRF token from the form
-		$csrfToken = $crawler->selectButton("Log in")->form()->get("login[_token]")->getValue();
-
-		// Submit login form with CSRF token
-		$client->request("POST", "/login", [
-			"login" => [
-				"username" => "testuser",
-				"password" => "testpassword",
-				"_token" => $csrfToken,
-				"submit" => "Log in",
-			],
-		]);
-
-		// Follow redirects to complete the login process
-		if ($client->getResponse()->isRedirect()) {
-			$client->followRedirect();
-		}
+		$client->loginUser($testUser);
 	}
 
 	public function testIndex(): void

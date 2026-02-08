@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\{EmailType, PasswordType, SubmitT
 use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RegisterType extends AbstractType
+final class RegisterType extends AbstractType
 {
 	final public function buildForm(FormBuilderInterface $builder, array $_): void
 	{

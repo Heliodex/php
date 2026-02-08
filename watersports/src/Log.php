@@ -5,7 +5,7 @@ namespace App;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-class Log
+final class Log
 {
 	private static ?Logger $logger = null;
 

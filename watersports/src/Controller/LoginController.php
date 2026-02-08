@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class LoginController extends Base
+final class LoginController extends Base
 {
 	#[Route("/login", methods: ["GET", "POST"], name: "login")]
 	public function login(AuthenticationUtils $authenticationUtils): Response

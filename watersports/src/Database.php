@@ -4,7 +4,7 @@ namespace App;
 
 use App\Entity\User;
 
-class Database
+final class Database
 {
 	private static $init = <<<SQL
 	CREATE TABLE IF NOT EXISTS user (

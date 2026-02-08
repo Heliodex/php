@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-class DefaultController extends Base
+final class DefaultController extends Base
 {
 	#[Route("/", name: "index")]
 	final public function index(#[CurrentUser] ?User $user): Response

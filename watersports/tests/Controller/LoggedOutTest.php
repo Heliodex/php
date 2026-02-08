@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class LoggedOutTest extends WebTestCase
+final class LoggedOutTest extends WebTestCase
 {
 	final public function testIndex(): void
 	{

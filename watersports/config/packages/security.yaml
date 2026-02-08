@@ -19,14 +19,14 @@ security:
             provider: users
 
             form_login:
-                login_path: login
                 check_path: login
+                login_path: login
                 enable_csrf: true
                 default_target_path: home
 
-            logout:
-                target: login
-                # enable_csrf: true
+            # logout:
+            #     target: login
+            #     # enable_csrf: true
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall

@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-class RegisterController extends Base
+final class RegisterController extends Base
 {
 	#[Route("/register", name: "register")]
 	final public function register(#[CurrentUser] ?User $user, Request $request): Response
