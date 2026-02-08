@@ -21,7 +21,9 @@ final class RegisterController extends Base
 
 
 		$register = new Register();
-		$form = $this->createForm(RegisterType::class, $register);
+		$form = $this->createForm(RegisterType::class, $register, [
+			"csrf_protection" => false,
+		]);
 
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
@@ -50,7 +52,7 @@ final class RegisterController extends Base
 
 			Log::info("Registration successful for username {$username}");
 
-			// Redirect to login page after successful registration
+			// Redirect to home page after successful registration
 			return $this->redirectToRoute("home");
 		}
 

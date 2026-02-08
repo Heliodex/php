@@ -15,24 +15,26 @@ security:
             security: false
 
         main:
-            lazy: false
+            lazy: true
             provider: users
 
             form_login:
                 check_path: login
                 login_path: login
-                enable_csrf: true
+                # enable_csrf: true
                 default_target_path: home
 
-            # logout:
-            #     target: login
-            #     # enable_csrf: true
+            logout:
+                target: login
+                # enable_csrf: true
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+
+            # entry_point: form_login
 
     # Note: Only the *first* matching rule is applied
     # access_control:

@@ -80,7 +80,7 @@ final class Database
 		if (!$row)
 			return null;
 
-		return new User(
+		return User::new(
 			$row["id"],
 			new \DateTime($row["created"]),
 			$username,
@@ -99,8 +99,8 @@ final class Database
 		if (!password_verify($password, $row["password"]))
 			return null;
 
-		return new User(
-			bin2hex($row["id"]),
+		return User::new(
+			$row["id"],
 			new \DateTime($row["created"]),
 			$row["username"],
 			$row["password"]

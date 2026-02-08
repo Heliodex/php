@@ -19,12 +19,5 @@ services:
     App\:
         resource: "../src/"
 
-    App\Entity\User:
-        arguments:
-            $id: 0
-            $createdAt: "now"
-            $username: ""
-            $password: ""
-
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

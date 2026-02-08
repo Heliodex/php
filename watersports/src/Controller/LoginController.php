@@ -2,15 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class LoginController extends Base
 {
 	#[Route("/login", methods: ["GET", "POST"], name: "login")]
-	public function login(AuthenticationUtils $authenticationUtils): Response
+	public function login(#[CurrentUser] ?User $user, AuthenticationUtils $authenticationUtils): Response
 	{
+		if ($user)
+			return $this->redirectToRoute("home");
+
 		// get the login error if there is one
 		$error = $authenticationUtils->getLastAuthenticationError();
 
