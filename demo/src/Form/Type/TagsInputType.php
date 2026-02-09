@@ -30,30 +30,30 @@ use Symfony\Component\Form\FormView;
  */
 final class TagsInputType extends AbstractType
 {
-    public function __construct(
-        private readonly TagRepository $tags,
-    ) {
-    }
+	public function __construct(
+		private readonly TagRepository $tags,
+	) {
+	}
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            // The Tag collection must be transformed into a comma separated string.
-            // We could create a custom transformer to do Collection <-> string in one step,
-            // but here we're doing the transformation in two steps (Collection <-> array <-> string)
-            // and reuse the existing CollectionToArrayTransformer.
-            ->addModelTransformer(new CollectionToArrayTransformer(), true)
-            ->addModelTransformer(new TagArrayToStringTransformer($this->tags), true)
-        ;
-    }
+	public function buildForm(FormBuilderInterface $builder, array $options): void
+	{
+		$builder
+			// The Tag collection must be transformed into a comma separated string.
+			// We could create a custom transformer to do Collection <-> string in one step,
+			// but here we're doing the transformation in two steps (Collection <-> array <-> string)
+			// and reuse the existing CollectionToArrayTransformer.
+			->addModelTransformer(new CollectionToArrayTransformer(), true)
+			->addModelTransformer(new TagArrayToStringTransformer($this->tags), true)
+		;
+	}
 
-    public function buildView(FormView $view, FormInterface $form, array $options): void
-    {
-        $view->vars['tags'] = $this->tags->findAll();
-    }
+	public function buildView(FormView $view, FormInterface $form, array $options): void
+	{
+		$view->vars['tags'] = $this->tags->findAll();
+	}
 
-    public function getParent(): string
-    {
-        return TextType::class;
-    }
+	public function getParent(): string
+	{
+		return TextType::class;
+	}
 }

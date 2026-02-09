@@ -28,58 +28,58 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final readonly class CommentNotificationSubscriber implements EventSubscriberInterface
 {
-    public function __construct(
-        private MailerInterface $mailer,
-        private UrlGeneratorInterface $urlGenerator,
-        private TranslatorInterface $translator,
-        #[Autowire('%app.notifications.email_sender%')]
-        private string $sender,
-    ) {
-    }
+	public function __construct(
+		private MailerInterface $mailer,
+		private UrlGeneratorInterface $urlGenerator,
+		private TranslatorInterface $translator,
+		#[Autowire('%app.notifications.email_sender%')]
+		private string $sender,
+	) {
+	}
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            CommentCreatedEvent::class => 'onCommentCreated',
-        ];
-    }
+	public static function getSubscribedEvents(): array
+	{
+		return [
+			CommentCreatedEvent::class => 'onCommentCreated',
+		];
+	}
 
-    public function onCommentCreated(CommentCreatedEvent $event): void
-    {
-        $comment = $event->getComment();
+	public function onCommentCreated(CommentCreatedEvent $event): void
+	{
+		$comment = $event->getComment();
 
-        /** @var Post $post */
-        $post = $comment->getPost();
+		/** @var Post $post */
+		$post = $comment->getPost();
 
-        /** @var User $author */
-        $author = $post->getAuthor();
+		/** @var User $author */
+		$author = $post->getAuthor();
 
-        /** @var string $emailAddress */
-        $emailAddress = $author->getEmail();
+		/** @var string $emailAddress */
+		$emailAddress = $author->getEmail();
 
-        $linkToPost = $this->urlGenerator->generate('blog_post', [
-            'slug' => $post->getSlug(),
-            '_fragment' => 'comment_'.$comment->getId(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+		$linkToPost = $this->urlGenerator->generate('blog_post', [
+			'slug' => $post->getSlug(),
+			'_fragment' => 'comment_' . $comment->getId(),
+		], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $subject = $this->translator->trans('notification.comment_created');
+		$subject = $this->translator->trans('notification.comment_created');
 
-        $body = $this->translator->trans('notification.comment_created.description', [
-            'title' => $post->getTitle(),
-            'link' => $linkToPost,
-        ]);
+		$body = $this->translator->trans('notification.comment_created.description', [
+			'title' => $post->getTitle(),
+			'link' => $linkToPost,
+		]);
 
-        // See https://symfony.com/doc/current/mailer.html
-        $email = new Email()
-            ->from($this->sender)
-            ->to($emailAddress)
-            ->subject($subject)
-            ->html($body)
-        ;
+		// See https://symfony.com/doc/current/mailer.html
+		$email = new Email()
+			->from($this->sender)
+			->to($emailAddress)
+			->subject($subject)
+			->html($body)
+		;
 
-        // In config/packages/mailer.yaml the delivery of messages is disabled in the development environment.
-        // That's why you won't actually receive any email.
-        // However, you can inspect the contents of those unsent emails using the debug toolbar.
-        $this->mailer->send($email);
-    }
+		// In config/packages/mailer.yaml the delivery of messages is disabled in the development environment.
+		// That's why you won't actually receive any email.
+		// However, you can inspect the contents of those unsent emails using the debug toolbar.
+		$this->mailer->send($email);
+	}
 }

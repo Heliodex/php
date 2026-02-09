@@ -16,24 +16,24 @@ use PHPUnit\Framework\TestCase;
 
 class AppExtensionTest extends TestCase
 {
-    public function testGetLocales(): void
-    {
-        $extension = new AppExtension(['ar', 'es', 'fr'], 'ar');
+	public function testGetLocales(): void
+	{
+		$extension = new AppExtension(['ar', 'es', 'fr'], 'ar');
 
-        $this->assertSame([
-            ['code' => 'ar', 'name' => 'العربية'],
-            ['code' => 'es', 'name' => 'español'],
-            ['code' => 'fr', 'name' => 'français'],
-        ], $extension->getLocales());
-    }
+		$this->assertSame([
+			['code' => 'ar', 'name' => 'العربية'],
+			['code' => 'es', 'name' => 'español'],
+			['code' => 'fr', 'name' => 'français'],
+		], $extension->getLocales());
+	}
 
-    public function testIsRtl(): void
-    {
-        $extension = new AppExtension(['ar', 'es', 'fr'], 'ar');
+	public function testIsRtl(): void
+	{
+		$extension = new AppExtension(['ar', 'es', 'fr'], 'ar');
 
-        $this->assertFalse($extension->isRtl('fr'));
-        $this->assertFalse($extension->isRtl('es'));
-        $this->assertTrue($extension->isRtl('ar'));
-        $this->assertTrue($extension->isRtl());
-    }
+		$this->assertFalse($extension->isRtl('fr'));
+		$this->assertFalse($extension->isRtl('es'));
+		$this->assertTrue($extension->isRtl('ar'));
+		$this->assertTrue($extension->isRtl());
+	}
 }

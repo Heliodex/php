@@ -29,34 +29,34 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
  */
 final class SecurityController extends AbstractController
 {
-    use TargetPathTrait;
+	use TargetPathTrait;
 
-    /*
-     * The $user argument type (?User) must be nullable because the login page
-     * must be accessible to anonymous visitors too.
-     */
-    #[Route('/login', name: 'security_login')]
-    public function login(
-        #[CurrentUser] ?User $user,
-        Request $request,
-        AuthenticationUtils $helper,
-    ): Response {
-        // if user is already logged in, don't display the login page again
-        if ($user) {
-            return $this->redirectToRoute('blog_index');
-        }
+	/*
+	 * The $user argument type (?User) must be nullable because the login page
+	 * must be accessible to anonymous visitors too.
+	 */
+	#[Route('/login', name: 'security_login')]
+	public function login(
+		#[CurrentUser] ?User $user,
+		Request $request,
+		AuthenticationUtils $helper,
+	): Response {
+		// if user is already logged in, don't display the login page again
+		if ($user) {
+			return $this->redirectToRoute('blog_index');
+		}
 
-        // this statement solves an edge-case: if you change the locale in the login
-        // page, after a successful login you are redirected to a page in the previous
-        // locale. This code regenerates the referrer URL whenever the login page is
-        // browsed, to ensure that its locale is always the current one.
-        $this->saveTargetPath($request->getSession(), 'main', $this->generateUrl('admin_index'));
+		// this statement solves an edge-case: if you change the locale in the login
+		// page, after a successful login you are redirected to a page in the previous
+		// locale. This code regenerates the referrer URL whenever the login page is
+		// browsed, to ensure that its locale is always the current one.
+		$this->saveTargetPath($request->getSession(), 'main', $this->generateUrl('admin_index'));
 
-        return $this->render('security/login.html.twig', [
-            // last username entered by the user (if any)
-            'last_username' => $helper->getLastUsername(),
-            // last authentication error (if any)
-            'error' => $helper->getLastAuthenticationError(),
-        ]);
-    }
+		return $this->render('security/login.html.twig', [
+			// last username entered by the user (if any)
+			'last_username' => $helper->getLastUsername(),
+			// last authentication error (if any)
+			'error' => $helper->getLastAuthenticationError(),
+		]);
+	}
 }

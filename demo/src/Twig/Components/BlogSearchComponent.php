@@ -27,30 +27,30 @@ use Symfony\UX\LiveComponent\DefaultActionTrait;
 #[AsLiveComponent(name: 'blog_search')]
 final class BlogSearchComponent
 {
-    use DefaultActionTrait;
+	use DefaultActionTrait;
 
-    /**
-     * Properties marked as LiveProp are stateful properties.
-     * This means that each time the component is re-rendered, it will remember the original value of the property
-     * and set it to the component object.
-     *
-     * By default, LiveProp are readonly. Making them writable allow users to change their value.
-     *
-     * See https://symfony.com/bundles/ux-live-component/current/index.html#liveprops-stateful-component-properties
-     */
-    #[LiveProp(writable: true)]
-    public string $query = '';
+	/**
+	 * Properties marked as LiveProp are stateful properties.
+	 * This means that each time the component is re-rendered, it will remember the original value of the property
+	 * and set it to the component object.
+	 *
+	 * By default, LiveProp are readonly. Making them writable allow users to change their value.
+	 *
+	 * See https://symfony.com/bundles/ux-live-component/current/index.html#liveprops-stateful-component-properties
+	 */
+	#[LiveProp(writable: true)]
+	public string $query = '';
 
-    public function __construct(
-        private readonly PostRepository $postRepository,
-    ) {
-    }
+	public function __construct(
+		private readonly PostRepository $postRepository,
+	) {
+	}
 
-    /**
-     * @return array<Post>
-     */
-    public function getPosts(): array
-    {
-        return $this->postRepository->findBySearchQuery($this->query);
-    }
+	/**
+	 * @return array<Post>
+	 */
+	public function getPosts(): array
+	{
+		return $this->postRepository->findBySearchQuery($this->query);
+	}
 }

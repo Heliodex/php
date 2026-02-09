@@ -25,40 +25,40 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'symfony_demo_tag')]
 class Tag implements \Stringable, \JsonSerializable
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: Types::INTEGER)]
-    private ?int $id = null;
+	#[ORM\Id]
+	#[ORM\GeneratedValue]
+	#[ORM\Column(type: Types::INTEGER)]
+	private ?int $id = null;
 
-    #[ORM\Column(type: Types::STRING, unique: true)]
-    private readonly string $name;
+	#[ORM\Column(type: Types::STRING, unique: true)]
+	private readonly string $name;
 
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
+	public function __construct(string $name)
+	{
+		$this->name = $name;
+	}
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+	public function getId(): ?int
+	{
+		return $this->id;
+	}
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+	public function getName(): string
+	{
+		return $this->name;
+	}
 
-    public function jsonSerialize(): string
-    {
-        // This entity implements JsonSerializable (http://php.net/manual/en/class.jsonserializable.php)
-        // so this method is used to customize its JSON representation when json_encode()
-        // is called, for example in tags|json_encode (templates/form/fields.html.twig)
+	public function jsonSerialize(): string
+	{
+		// This entity implements JsonSerializable (http://php.net/manual/en/class.jsonserializable.php)
+		// so this method is used to customize its JSON representation when json_encode()
+		// is called, for example in tags|json_encode (templates/form/fields.html.twig)
 
-        return $this->name;
-    }
+		return $this->name;
+	}
 
-    public function __toString(): string
-    {
-        return $this->name;
-    }
+	public function __toString(): string
+	{
+		return $this->name;
+	}
 }

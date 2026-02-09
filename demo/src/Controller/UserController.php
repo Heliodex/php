@@ -34,49 +34,49 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/profile'), IsGranted(User::ROLE_USER)]
 final class UserController extends AbstractController
 {
-    #[Route('/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        #[CurrentUser] User $user,
-        Request $request,
-        EntityManagerInterface $entityManager,
-    ): Response {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
+	#[Route('/edit', name: 'user_edit', methods: ['GET', 'POST'])]
+	public function edit(
+		#[CurrentUser] User $user,
+		Request $request,
+		EntityManagerInterface $entityManager,
+	): Response {
+		$form = $this->createForm(UserType::class, $user);
+		$form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+		if ($form->isSubmitted() && $form->isValid()) {
+			$entityManager->flush();
 
-            $this->addFlash('success', 'user.updated_successfully');
+			$this->addFlash('success', 'user.updated_successfully');
 
-            return $this->redirectToRoute('user_edit', [], Response::HTTP_SEE_OTHER);
-        }
+			return $this->redirectToRoute('user_edit', [], Response::HTTP_SEE_OTHER);
+		}
 
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
-    }
+		return $this->render('user/edit.html.twig', [
+			'user' => $user,
+			'form' => $form,
+		]);
+	}
 
-    #[Route('/change-password', name: 'user_change_password', methods: ['GET', 'POST'])]
-    public function changePassword(
-        #[CurrentUser] User $user,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        Security $security,
-    ): Response {
-        $form = $this->createForm(ChangePasswordType::class, $user);
-        $form->handleRequest($request);
+	#[Route('/change-password', name: 'user_change_password', methods: ['GET', 'POST'])]
+	public function changePassword(
+		#[CurrentUser] User $user,
+		Request $request,
+		EntityManagerInterface $entityManager,
+		Security $security,
+	): Response {
+		$form = $this->createForm(ChangePasswordType::class, $user);
+		$form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+		if ($form->isSubmitted() && $form->isValid()) {
+			$entityManager->flush();
 
-            // The logout method applies an automatic protection against CSRF attacks;
-            // it's explicitly disabled here because the form already has a CSRF token validated.
-            return $security->logout(validateCsrfToken: false) ?? $this->redirectToRoute('homepage');
-        }
+			// The logout method applies an automatic protection against CSRF attacks;
+			// it's explicitly disabled here because the form already has a CSRF token validated.
+			return $security->logout(validateCsrfToken: false) ?? $this->redirectToRoute('homepage');
+		}
 
-        return $this->render('user/change_password.html.twig', [
-            'form' => $form,
-        ]);
-    }
+		return $this->render('user/change_password.html.twig', [
+			'form' => $form,
+		]);
+	}
 }

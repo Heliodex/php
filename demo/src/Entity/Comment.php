@@ -29,82 +29,82 @@ use function Symfony\Component\String\u;
 #[ORM\Table(name: 'symfony_demo_comment')]
 class Comment
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: Types::INTEGER)]
-    private ?int $id = null;
+	#[ORM\Id]
+	#[ORM\GeneratedValue]
+	#[ORM\Column(type: Types::INTEGER)]
+	private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Post $post = null;
+	#[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
+	#[ORM\JoinColumn(nullable: false)]
+	private ?Post $post = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'comment.blank')]
-    #[Assert\Length(min: 5, max: 10000, minMessage: 'comment.too_short', maxMessage: 'comment.too_long')]
-    private ?string $content = null;
+	#[ORM\Column(type: Types::TEXT)]
+	#[Assert\NotBlank(message: 'comment.blank')]
+	#[Assert\Length(min: 5, max: 10000, minMessage: 'comment.too_short', maxMessage: 'comment.too_long')]
+	private ?string $content = null;
 
-    #[ORM\Column]
-    private \DateTimeImmutable $publishedAt;
+	#[ORM\Column]
+	private \DateTimeImmutable $publishedAt;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $author = null;
+	#[ORM\ManyToOne(targetEntity: User::class)]
+	#[ORM\JoinColumn(nullable: false)]
+	private ?User $author = null;
 
-    public function __construct()
-    {
-        $this->publishedAt = new \DateTimeImmutable();
-    }
+	public function __construct()
+	{
+		$this->publishedAt = new \DateTimeImmutable();
+	}
 
-    #[Assert\IsTrue(message: 'comment.is_spam')]
-    public function isLegitComment(): bool
-    {
-        $containsInvalidCharacters = null !== u($this->content)->indexOf('@');
+	#[Assert\IsTrue(message: 'comment.is_spam')]
+	public function isLegitComment(): bool
+	{
+		$containsInvalidCharacters = null !== u($this->content)->indexOf('@');
 
-        return !$containsInvalidCharacters;
-    }
+		return !$containsInvalidCharacters;
+	}
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+	public function getId(): ?int
+	{
+		return $this->id;
+	}
 
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
+	public function getContent(): ?string
+	{
+		return $this->content;
+	}
 
-    public function setContent(string $content): void
-    {
-        $this->content = $content;
-    }
+	public function setContent(string $content): void
+	{
+		$this->content = $content;
+	}
 
-    public function getPublishedAt(): \DateTimeImmutable
-    {
-        return $this->publishedAt;
-    }
+	public function getPublishedAt(): \DateTimeImmutable
+	{
+		return $this->publishedAt;
+	}
 
-    public function setPublishedAt(\DateTimeImmutable $publishedAt): void
-    {
-        $this->publishedAt = $publishedAt;
-    }
+	public function setPublishedAt(\DateTimeImmutable $publishedAt): void
+	{
+		$this->publishedAt = $publishedAt;
+	}
 
-    public function getAuthor(): ?User
-    {
-        return $this->author;
-    }
+	public function getAuthor(): ?User
+	{
+		return $this->author;
+	}
 
-    public function setAuthor(User $author): void
-    {
-        $this->author = $author;
-    }
+	public function setAuthor(User $author): void
+	{
+		$this->author = $author;
+	}
 
-    public function getPost(): ?Post
-    {
-        return $this->post;
-    }
+	public function getPost(): ?Post
+	{
+		return $this->post;
+	}
 
-    public function setPost(Post $post): void
-    {
-        $this->post = $post;
-    }
+	public function setPost(Post $post): void
+	{
+		$this->post = $post;
+	}
 }

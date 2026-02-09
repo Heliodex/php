@@ -40,10 +40,10 @@ use Symfony\Component\Mime\Email;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 #[AsCommand(
-    name: 'app:list-users',
-    description: 'Lists all the existing users',
-    aliases: ['app:users'],
-    help: <<<'HELP'
+	name: 'app:list-users',
+	description: 'Lists all the existing users',
+	aliases: ['app:users'],
+	help: <<<'HELP'
         The <info>%command.name%</info> command lists all the users registered in the application:
 
           <info>php %command.full_name%</info>
@@ -61,76 +61,76 @@ use Symfony\Component\Mime\Email;
 )]
 final class ListUsersCommand
 {
-    public function __construct(
-        private readonly MailerInterface $mailer,
-        #[Autowire('%app.notifications.email_sender%')]
-        private readonly string $emailSender,
-        private readonly UserRepository $users,
-    ) {
-    }
+	public function __construct(
+		private readonly MailerInterface $mailer,
+		#[Autowire('%app.notifications.email_sender%')]
+		private readonly string $emailSender,
+		private readonly UserRepository $users,
+	) {
+	}
 
-    /**
-     * This method is executed after initialize(). It usually contains the logic
-     * to execute to complete this command task.
-     *
-     * Commands can optionally define arguments and/or options (mandatory and optional)
-     *
-     * @see https://symfony.com/doc/current/console/input.html
-     */
-    public function __invoke(
-        InputInterface $input,
-        OutputInterface $output,
-        #[Option('If set, the result is sent to the given email address', 'send-to')] ?string $email = null,
-        #[Option('Limits the number of users listed')] int $maxResults = 50,
-    ): int {
-        // Use ->findBy() instead of ->findAll() to allow result sorting and limiting
-        $allUsers = $this->users->findBy([], ['id' => 'DESC'], $maxResults);
+	/**
+	 * This method is executed after initialize(). It usually contains the logic
+	 * to execute to complete this command task.
+	 *
+	 * Commands can optionally define arguments and/or options (mandatory and optional)
+	 *
+	 * @see https://symfony.com/doc/current/console/input.html
+	 */
+	public function __invoke(
+		InputInterface $input,
+		OutputInterface $output,
+		#[Option('If set, the result is sent to the given email address', 'send-to')] ?string $email = null,
+		#[Option('Limits the number of users listed')] int $maxResults = 50,
+	): int {
+		// Use ->findBy() instead of ->findAll() to allow result sorting and limiting
+		$allUsers = $this->users->findBy([], ['id' => 'DESC'], $maxResults);
 
-        $createUserArray = static fn (User $user): array => [
-            $user->getId(),
-            $user->getFullName(),
-            $user->getUsername(),
-            $user->getEmail(),
-            implode(', ', $user->getRoles()),
-        ];
+		$createUserArray = static fn(User $user): array => [
+			$user->getId(),
+			$user->getFullName(),
+			$user->getUsername(),
+			$user->getEmail(),
+			implode(', ', $user->getRoles()),
+		];
 
-        // Doctrine query returns an array of objects, and we need an array of plain arrays
-        $usersAsPlainArrays = array_map($createUserArray, $allUsers);
+		// Doctrine query returns an array of objects, and we need an array of plain arrays
+		$usersAsPlainArrays = array_map($createUserArray, $allUsers);
 
-        // In your console commands you should always use the regular output type,
-        // which outputs contents directly in the console window. However, this
-        // command uses the BufferedOutput type instead, to be able to get the output
-        // contents before displaying them. This is needed because the command allows
-        // to send the list of users via email with the '--send-to' option
-        $bufferedOutput = new BufferedOutput();
-        $io = new SymfonyStyle($input, $bufferedOutput);
-        $io->table(
-            ['ID', 'Full Name', 'Username', 'Email', 'Roles'],
-            $usersAsPlainArrays
-        );
+		// In your console commands you should always use the regular output type,
+		// which outputs contents directly in the console window. However, this
+		// command uses the BufferedOutput type instead, to be able to get the output
+		// contents before displaying them. This is needed because the command allows
+		// to send the list of users via email with the '--send-to' option
+		$bufferedOutput = new BufferedOutput();
+		$io = new SymfonyStyle($input, $bufferedOutput);
+		$io->table(
+			['ID', 'Full Name', 'Username', 'Email', 'Roles'],
+			$usersAsPlainArrays
+		);
 
-        // instead of just displaying the table of users, store its contents in a variable
-        $usersAsATable = $bufferedOutput->fetch();
-        $output->write($usersAsATable);
+		// instead of just displaying the table of users, store its contents in a variable
+		$usersAsATable = $bufferedOutput->fetch();
+		$output->write($usersAsATable);
 
-        if (null !== $email) {
-            $this->sendReport($usersAsATable, $email);
-        }
+		if (null !== $email) {
+			$this->sendReport($usersAsATable, $email);
+		}
 
-        return Command::SUCCESS;
-    }
+		return Command::SUCCESS;
+	}
 
-    /**
-     * Sends the given $contents to the $recipient email address.
-     */
-    private function sendReport(string $contents, string $recipient): void
-    {
-        $email = new Email()
-            ->from($this->emailSender)
-            ->to($recipient)
-            ->subject(\sprintf('app:list-users report (%s)', date('Y-m-d H:i:s')))
-            ->text($contents);
+	/**
+	 * Sends the given $contents to the $recipient email address.
+	 */
+	private function sendReport(string $contents, string $recipient): void
+	{
+		$email = new Email()
+			->from($this->emailSender)
+			->to($recipient)
+			->subject(\sprintf('app:list-users report (%s)', date('Y-m-d H:i:s')))
+			->text($contents);
 
-        $this->mailer->send($email);
-    }
+		$this->mailer->send($email);
+	}
 }

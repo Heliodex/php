@@ -25,27 +25,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class DateTimePickerType extends AbstractType
 {
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        // @see https://symfony.com/doc/current/reference/forms/types/date.html#rendering-a-single-html5-text-box
-        $resolver->setDefaults([
-            'widget' => 'single_text',
-            'input' => 'datetime_immutable',
-            // If true, the browser will display the native date picker widget
-            // however, this app uses a custom JavaScript widget, so it must be set to false
-            'html5' => false,
-            // Add attributes for flatpickr usage that can be selected in JavaScript
-            'attr' => [
-                'data-input' => 'data-input',
-            ],
-            'format' => 'yyyy-MM-dd HH:mm',
-            'input_format' => 'Y-m-d H:i',
-            'date_format' => 'Y-m-d H:i',
-        ]);
-    }
+	public function configureOptions(OptionsResolver $resolver): void
+	{
+		// @see https://symfony.com/doc/current/reference/forms/types/date.html#rendering-a-single-html5-text-box
+		$resolver->setDefaults([
+			'widget' => 'single_text',
+			'input' => 'datetime_immutable',
+			// If true, the browser will display the native date picker widget
+			// however, this app uses a custom JavaScript widget, so it must be set to false
+			'html5' => false,
+			// Add attributes for flatpickr usage that can be selected in JavaScript
+			'attr' => [
+				'data-input' => 'data-input',
+			],
+			'format' => 'yyyy-MM-dd HH:mm',
+			'input_format' => 'Y-m-d H:i',
+			'date_format' => 'Y-m-d H:i',
+		]);
+	}
 
-    public function getParent(): string
-    {
-        return DateTimeType::class;
-    }
+	public function getParent(): string
+	{
+		return DateTimeType::class;
+	}
 }

@@ -2,18 +2,18 @@
 
 {% block body_id 'blog_search' %}
 
-{% block main %}
-    {#
+    {% block main %}
+        {#
         Render a component by passing its name as first argument
         See https://symfony.com/bundles/ux-twig-component/current/index.html
-    #}
-    {{ component('blog_search', {
+        #}
+        {{ component('blog_search', {
         query: query,
-    }) }}
-{% endblock %}
+        }) }}
+    {% endblock %}
 
-{% block sidebar %}
-    {{ parent() }}
+    {% block sidebar %}
+        {{ parent() }}
 
-    {{ show_source_code(_self) }}
-{% endblock %}
+        {{ show_source_code(_self) }}
+    {% endblock %}

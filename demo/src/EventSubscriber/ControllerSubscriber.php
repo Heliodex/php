@@ -25,25 +25,25 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final readonly class ControllerSubscriber implements EventSubscriberInterface
 {
-    public function __construct(
-        private SourceCodeExtension $twigExtension,
-    ) {
-    }
+	public function __construct(
+		private SourceCodeExtension $twigExtension,
+	) {
+	}
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::CONTROLLER => 'registerCurrentController',
-        ];
-    }
+	public static function getSubscribedEvents(): array
+	{
+		return [
+			KernelEvents::CONTROLLER => 'registerCurrentController',
+		];
+	}
 
-    public function registerCurrentController(ControllerEvent $event): void
-    {
-        // this check is needed because in Symfony a request can perform any
-        // number of sub-requests. See
-        // https://symfony.com/doc/current/components/http_kernel.html#sub-requests
-        if ($event->isMainRequest()) {
-            $this->twigExtension->setController($event->getController());
-        }
-    }
+	public function registerCurrentController(ControllerEvent $event): void
+	{
+		// this check is needed because in Symfony a request can perform any
+		// number of sub-requests. See
+		// https://symfony.com/doc/current/components/http_kernel.html#sub-requests
+		if ($event->isMainRequest()) {
+			$this->twigExtension->setController($event->getController());
+		}
+	}
 }

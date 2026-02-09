@@ -1,7 +1,7 @@
 {#
-    This is the base template used as the application layout which contains the
-    common elements and decorates all the other templates.
-    See https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts
+This is the base template used as the application layout which contains the
+common elements and decorates all the other templates.
+See https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts
 #}
 <!DOCTYPE html>
 <html lang="{{ app.locale }}" dir="{{ is_rtl() ? 'rtl' : 'ltr' }}">
@@ -14,12 +14,15 @@
         <link rel="shortcut icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
         {#
-            Those two blocks defines frontend entrypoint for CSS and JavaScript assets
-            See https://symfony.com/doc/current/frontend.html
+        Those two blocks defines frontend entrypoint for CSS and JavaScript assets
+        See https://symfony.com/doc/current/frontend.html
         #}
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+        {% endblock %}
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {% block importmap %}
+                {{ importmap('app') }}
+            {% endblock %}
         {% endblock %}
     </head>
 
@@ -93,15 +96,16 @@
                     <div id="main" class="col-sm-9">
                         {{ include('default/_flash_messages.html.twig') }}
 
-                        {% block main %}{% endblock %}
+                        {% block main %}
+                        {% endblock %}
                     </div>
 
                     <div id="sidebar" class="col-sm-3">
                         {% block sidebar %}
                             {{ render_esi(controller('Symfony\\Bundle\\FrameworkBundle\\Controller\\TemplateController::templateAction', {
-                                template: 'blog/about.html.twig',
-                                sharedAge: 600,
-                                _locale: app.locale,
+                            template: 'blog/about.html.twig',
+                            sharedAge: 600,
+                            _locale: app.locale,
                             })) }}
                         {% endblock %}
                     </div>
@@ -133,9 +137,9 @@
         {% endblock %}
 
         {#
-            It's not mandatory to set the timezone in format_datetime(). This is done to
-            avoid errors when the 'intl' PHP extension is not available and the application
-            is forced to use the limited "intl polyfill", which only supports UTC and GMT
+        It's not mandatory to set the timezone in format_datetime(). This is done to
+        avoid errors when the 'intl' PHP extension is not available and the application
+        is forced to use the limited "intl polyfill", which only supports UTC and GMT
         #}
         <!-- Page rendered on {{ 'now'|format_datetime('long', 'long', '', 'UTC') }} -->
     </body>
