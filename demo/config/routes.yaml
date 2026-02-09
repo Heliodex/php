@@ -16,10 +16,10 @@ homepage:
     controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
     defaults:
         template: default/homepage.html.twig
-        _locale: '%app.locale%'
+        _locale: "%app.locale%"
 
 controllers:
     resource: routing.controllers
     prefix: /{_locale}
     defaults:
-        _locale: '%app.locale%'
+        _locale: "%app.locale%"
