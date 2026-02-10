@@ -1,16 +1,18 @@
 <nav>
     <ul>
-        <li><a href="{{ path('index') }}">Watersports</a></li>
-        <li><a href="{{ path('home') }}">Home</a></li>
-        <li><a href="{{ path('login') }}">Login</a></li>
-        <li><a href="{{ path('register') }}">Register</a></li>
-        <li>
-            Username:
-            {# {{ user }} #}
-        </li>
-
-        <form method="post" action="{{ path('logout') }}" class="inline-form">
-            <button>Log out</button>
-        </form>
+		{% if user is defined %}
+			<li><a href="{{ path('index') }}">Watersports</a></li>
+			<li><a href="{{ path('home') }}">Home</a></li>
+			<li>
+				Username: {{ user.username }}
+			</li>
+			<form method="post" action="{{ path('logout') }}" class="inline-form">
+				<button>Log out</button>
+			</form>
+		{% else %}
+			<li><a href="{{ path('index') }}">Watersports</a></li>
+			<li><a href="{{ path('login') }}">Login</a></li>
+			<li><a href="{{ path('register') }}">Register</a></li>
+		{% endif %}
     </ul>
 </nav>
