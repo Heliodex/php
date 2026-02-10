@@ -18,7 +18,14 @@ final class LoggedInTest extends WebTestCase
 			$testUser = Database::checkUser("testuser", "testpassword");
 		}
 
-		$client->loginUser($testUser);
+		// find form and submit with test user credentials
+		$crawler = $client->request("GET", "/login");
+		$form = $crawler->selectButton("Log in")->form();
+		$form["login[username]"] = "testuser";
+		$form["login[password]"] = "testpassword";
+		$client->submit($form);
+		$client->followRedirect();
+		$this->assertResponseIsSuccessful();
 	}
 
 	public function testIndex(): void

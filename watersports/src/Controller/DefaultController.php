@@ -3,18 +3,15 @@
 namespace App\Controller;
 
 use App\Database;
-use App\Entity\User;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 final class DefaultController extends Base
 {
 	#[Route("/", name: "index")]
-	final public function index(#[CurrentUser] ?User $user): Response
+	final public function index(Request $request): Response
 	{
-		// Redirect authenticated users to /home
-		if ($user)
+		if ($request->getSession()->get("user"))
 			return $this->redirectToRoute("home");
 
 		$number = Database::getRandomNumber();

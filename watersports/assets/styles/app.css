@@ -158,22 +158,21 @@ form {
 		padding: var(--size-2) var(--size-3);
 		border-radius: var(--size-1);
 
-		 list-style-position: inside;
+		list-style-position: inside;
 	}
 
-	/* > div { */
-	display: flex;
-	flex-direction: column;
-	gap: var(--size-3);
-
-	/* omg I'm actually using the :has() selector */
-	> div:has(input) {
+	> div {
 		display: flex;
 		flex-direction: column;
-		gap: var(--size-2);
-	}
-	/* } */
+		gap: var(--size-3);
 
+		/* omg I'm actually using the :has() selector */
+		> div:has(input) {
+			display: flex;
+			flex-direction: column;
+			gap: var(--size-2);
+		}
+	}
 }
 
 .rowform {

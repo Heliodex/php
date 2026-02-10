@@ -2,28 +2,24 @@
 
 namespace App\Controller;
 
-use App\Entity\{Register, User};
+use App\Entity\Register;
 use App\Form\Type\RegisterType;
 use App\{Database, Log};
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 final class RegisterController extends Base
 {
 	#[Route("/register", name: "register")]
-	final public function register(#[CurrentUser] ?User $user, Request $request): Response
+	final public function register(Request $request): Response
 	{
-		// Redirect authenticated users to /home
-		if ($user)
+		if ($request->getSession()->get("user"))
 			return $this->redirectToRoute("home");
 
 
 		$register = new Register();
-		$form = $this->createForm(RegisterType::class, $register, [
-			"csrf_protection" => false,
-		]);
+		$form = $this->createForm(RegisterType::class, $register);
 
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {

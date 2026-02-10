@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use DateTime;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-final class User implements UserInterface, PasswordAuthenticatedUserInterface
+final class User
 {
 	final public string $id;
 	final public DateTime $createdAt;

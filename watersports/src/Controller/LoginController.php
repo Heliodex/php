@@ -14,6 +14,9 @@ final class LoginController extends Base
 	#[Route("/login", methods: ["GET", "POST"], name: "login")]
 	final public function login(Request $request): Response
 	{
+		if ($request->getSession()->get("user"))
+			return $this->redirectToRoute("home");
+
 		$login = new Login();
 		$form = $this->createForm(LoginType::class, $login);
 
@@ -21,15 +24,11 @@ final class LoginController extends Base
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
 
-			Log::info("Login attempt with username {$data->username}");
-
 			$username = $data->username;
 			$password = $data->password;
 
 			$user = Database::checkUser($username, $password);
 			if ($user) {
-				Log::info("Login successful for username {$username}");
-
 				// set session and return to logged-in page
 				$session = $request->getSession();
 				$session->set("user", $user);
