@@ -6,7 +6,7 @@ use App\Entity\User;
 
 final class Database
 {
-	private static $init = <<<SQL
+	private static string $init = <<<SQL
 	CREATE TABLE IF NOT EXISTS user (
 		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
 		created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

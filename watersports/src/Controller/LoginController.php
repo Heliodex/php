@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\{Database, Log};
+use App\Database;
 use App\Entity\Login;
 use App\Form\Type\LoginType;
 use Symfony\Component\Form\FormError;

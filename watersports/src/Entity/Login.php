@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class Login
+readonly final class Login
 {
 	#[Assert\NotBlank]
 	final public string $username;

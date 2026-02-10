@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 
-final class User
+readonly final class User
 {
 	final public string $id;
 	final public DateTime $createdAt;
