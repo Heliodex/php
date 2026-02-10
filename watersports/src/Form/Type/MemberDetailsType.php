@@ -6,11 +6,11 @@ use App\Entity\MemberDetails;
 use Symfony\Component\Form\Extension\Core\Type\{EnumType, TextType};
 use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
 use Symfony\Component\OptionsResolver\OptionsResolver;
-enum MemberCategory: string
+enum MemberCategory
 {
-	case GOLD = "gold";
-	case SILVER = "silver";
-	case BRONZE = "bronze";
+	case Gold;
+	case Silver;
+	case Bronze;
 }
 
 final class MemberDetailsType extends AbstractType

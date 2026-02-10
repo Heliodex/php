@@ -7,5 +7,21 @@
 {% block main %}
     <h1>Register</h1>
 
-    {{ form(form) }}
+    {# {{ form(form) }} #}
+    {{ form_start(form) }}
+    <div>
+        {{ form_errors(form) }}
+
+        <h2>User details</h2>
+        {{ form_row(form.forename) }}
+        {{ form_row(form.surname) }}
+        {{ form_row(form.street) }}
+        {{ form_row(form.town) }}
+        {{ form_row(form.postcode) }}
+        {{ form_row(form.memberCategory) }}
+        <hr>
+
+        <h2>Account information</h2>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}
