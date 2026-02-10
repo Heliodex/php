@@ -88,37 +88,50 @@ final class Database
 		);
 	}
 
-	final public static function checkUser(string $username, string $password): ?User
+	final public static function checkUser(string $username, string $passwordRaw): ?User
 	{
-		$stmt = self::pdo()->prepare("SELECT * FROM user WHERE username = :username");
+		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE username = :username");
 		$stmt->execute(["username" => $username]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)
 			return null;
 
-		if (!password_verify($password, $row["password"]))
+		if (!password_verify($passwordRaw, $row["password"]))
 			return null;
 
 		return User::new(
 			$row["id"],
 			new \DateTime($row["created"]),
-			$row["username"],
-			$row["password"]
+			$username,
+			$row["password"],
 		);
 	}
 
-	final public static function registerUser(string $username, string $email, string $password): bool
+	final public static function registerUser(string $username, string $email, string $password): ?User
 	{
 		try {
-			$stmt = self::pdo()->prepare("INSERT INTO user (username, email, password) VALUES (:username, :email, :password)");
-			return $stmt->execute([
+			// Use RETURNING to get the inserted row in a single query (works on SQLite 3.35+)
+			$stmt = self::pdo()->prepare(
+				"INSERT INTO user (username, email, password) VALUES (:username, :email, :password) RETURNING id, created, password;"
+			);
+			$stmt->execute([
 				"username" => $username,
 				"email" => $email,
 				"password" => password_hash($password, PASSWORD_ARGON2ID),
 			]);
+			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+			if (!$row)
+				return null;
+
+			return User::new(
+				$row["id"],
+				new \DateTime($row["created"]),
+				$username,
+				$row["password"]
+			);
 		} catch (\PDOException $e) {
 			Log::error("Database error during registration: " . $e->getMessage());
-			return false;
+			return null;
 		}
 	}
 }

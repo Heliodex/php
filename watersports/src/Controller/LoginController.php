@@ -2,29 +2,47 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use Symfony\Component\HttpFoundation\Response;
+use App\{Database, Log};
+use App\Entity\Login;
+use App\Form\Type\LoginType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class LoginController extends Base
 {
 	#[Route("/login", methods: ["GET", "POST"], name: "login")]
-	public function login(#[CurrentUser] ?User $user, AuthenticationUtils $authenticationUtils): Response
+	final public function login(Request $request): Response
 	{
-		if ($user)
-			return $this->redirectToRoute("home");
+		$login = new Login();
+		$form = $this->createForm(LoginType::class, $login);
 
-		// get the login error if there is one
-		$error = $authenticationUtils->getLastAuthenticationError();
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			$data = $form->getData();
 
-		// last username entered by the user
-		$lastUsername = $authenticationUtils->getLastUsername();
+			Log::info("Login attempt with username {$data->username}");
+
+			$username = $data->username;
+			$password = $data->password;
+
+			$user = Database::checkUser($username, $password);
+			if ($user) {
+				Log::info("Login successful for username {$username}");
+
+				// set session and return to logged-in page
+				$session = $request->getSession();
+				$session->set("user", $user);
+
+				return $this->redirectToRoute("home");
+			}
+
+			// add error message
+			$form->addError(new FormError("Incorrect username or password"));
+		}
 
 		return $this->render("login.html.twig", [
-			"last_username" => $lastUsername,
-			"error" => $error,
+			"form" => $form,
 		]);
 	}
 }

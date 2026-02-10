@@ -41,5 +41,6 @@
 			"matchCommandLine": true
 		},
 		"strings": true
-	}
+	},
+	"php.version": "8.5.2"
 }

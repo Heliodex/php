@@ -43,7 +43,8 @@ final class RegisterController extends Base
 				]);
 			}
 
-			if (!Database::registerUser($username, $email, $password)) {
+			$newUser = Database::registerUser($username, $email, $password);
+			if (!$newUser) {
 				$form->addError(new FormError("Registration failed. Username or email may already be taken."));
 				return $this->render("register.html.twig", [
 					"form" => $form,
@@ -51,6 +52,9 @@ final class RegisterController extends Base
 			}
 
 			Log::info("Registration successful for username {$username}");
+
+			$session = $request->getSession();
+			$session->set("user", $newUser);
 
 			// Redirect to home page after successful registration
 			return $this->redirectToRoute("home");
