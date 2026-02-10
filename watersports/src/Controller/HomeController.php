@@ -16,7 +16,7 @@ final class HomeController extends Base
 
 		$number = Database::getRandomNumber();
 
-		return $this->render("home.html.twig", [
+		return $this->finish($request, "home.html.twig", [
 			"number" => $number,
 		]);
 	}

@@ -2,22 +2,24 @@
 
 namespace App\Controller;
 
+use App\Log;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 class Base extends AbstractController
 {
-	final protected function render(string $view, array $parameters = [], ?Response $response = null): Response
+	final protected function finish(Request $request, string $view, array $parameters = []): Response
 	{
-		// add nav user parameter if not already set
+		$session = $request->getSession();
+		$user = $session->get("user");
+
 		$newParams = [
-			"user" => "Guest",
+			"user" => $user,
 		];
 
 		return parent::render(
 			$view,
 			[...$parameters, ...$newParams],
-			$response
 		);
 	}
 }

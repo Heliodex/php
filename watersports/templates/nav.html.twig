@@ -1,7 +1,6 @@
 <nav>
     <ul>
-		{% if user is defined %}
-			<li><a href="{{ path('index') }}">Watersports</a></li>
+		{% if user %}
 			<li><a href="{{ path('home') }}">Home</a></li>
 			<li>
 				Username: {{ user.username }}

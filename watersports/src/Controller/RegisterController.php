@@ -21,6 +21,10 @@ final class RegisterController extends Base
 		$register = new Register();
 		$form = $this->createForm(RegisterType::class, $register);
 
+		$finish = fn() => $this->finish($request, "register.html.twig", [
+			"form" => $form,
+		]);
+
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
@@ -34,17 +38,13 @@ final class RegisterController extends Base
 
 			if ($password !== $confirmPassword) {
 				$form->addError(new FormError("Passwords do not match"));
-				return $this->render("register.html.twig", [
-					"form" => $form,
-				]);
+				return $finish();
 			}
 
 			$newUser = Database::registerUser($username, $email, $password);
 			if (!$newUser) {
 				$form->addError(new FormError("Registration failed. Username or email may already be taken."));
-				return $this->render("register.html.twig", [
-					"form" => $form,
-				]);
+				return $finish();
 			}
 
 			Log::info("Registration successful for username {$username}");
@@ -56,8 +56,6 @@ final class RegisterController extends Base
 			return $this->redirectToRoute("home");
 		}
 
-		return $this->render("register.html.twig", [
-			"form" => $form,
-		]);
+		return $finish();
 	}
 }

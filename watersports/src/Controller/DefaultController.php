@@ -16,7 +16,7 @@ final class DefaultController extends Base
 
 		$number = Database::getRandomNumber();
 
-		return $this->render("index.html.twig", [
+		return $this->finish($request, "index.html.twig", [
 			"number" => $number,
 		]);
 	}

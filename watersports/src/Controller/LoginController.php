@@ -20,6 +20,10 @@ final class LoginController extends Base
 		$login = new Login();
 		$form = $this->createForm(LoginType::class, $login);
 
+		$finish = fn() => $this->finish($request, "login.html.twig", [
+			"form" => $form,
+		]);
+
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
@@ -28,20 +32,19 @@ final class LoginController extends Base
 			$password = $data->password;
 
 			$user = Database::checkUser($username, $password);
-			if ($user) {
-				// set session and return to logged-in page
-				$session = $request->getSession();
-				$session->set("user", $user);
-
-				return $this->redirectToRoute("home");
+			if (!$user) {
+				// add error message
+				$form->addError(new FormError("Incorrect username or password"));
+				return $finish();
 			}
 
-			// add error message
-			$form->addError(new FormError("Incorrect username or password"));
+			// set session and return to logged-in page
+			$session = $request->getSession();
+			$session->set("user", $user);
+
+			return $this->redirectToRoute("home");
 		}
 
-		return $this->render("login.html.twig", [
-			"form" => $form,
-		]);
+		return $finish();
 	}
 }
