@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Register;
 use App\Form\Type\RegisterType;
-use App\{Database, Log};
+use App\Database;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,9 +29,6 @@ final class RegisterController extends Base
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
 
-			Log::info("Registration attempt with username {$data->username}");
-
-			$username = $data->username;
 			$email = $data->email;
 			$password = $data->password;
 			$confirmPassword = $data->confirmPassword;
@@ -41,13 +38,11 @@ final class RegisterController extends Base
 				return $finish();
 			}
 
-			$newUser = Database::registerUser($username, $email, $password);
+			$newUser = Database::registerUser($email, $password);
 			if (!$newUser) {
-				$form->addError(new FormError("Registration failed. Username or email may already be taken."));
+				$form->addError(new FormError("Registration failed. An account may already be registered with this email address."));
 				return $finish();
 			}
-
-			Log::info("Registration successful for username {$username}");
 
 			$session = $request->getSession();
 			$session->set("user", $newUser);

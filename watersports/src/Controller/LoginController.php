@@ -28,13 +28,13 @@ final class LoginController extends Base
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
 
-			$username = $data->username;
+			$email = $data->email;
 			$password = $data->password;
 
-			$user = Database::checkUser($username, $password);
+			$user = Database::checkUser($email, $password);
 			if (!$user) {
 				// add error message
-				$form->addError(new FormError("Incorrect username or password"));
+				$form->addError(new FormError("Incorrect email or password"));
 				return $finish();
 			}
 

@@ -10,7 +10,6 @@ final class Database
 	CREATE TABLE IF NOT EXISTS user (
 		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
 		created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		username TEXT NOT NULL UNIQUE,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
 	);
@@ -72,10 +71,10 @@ final class Database
 		return (int) $row["number"];
 	}
 
-	final public static function getUserByUsername(string $username): ?User
+	final public static function getUserByEmai(string $email): ?User
 	{
-		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE username = :username");
-		$stmt->execute(["username" => $username]);
+		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE email = :email");
+		$stmt->execute(["email" => $email]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)
 			return null;
@@ -83,15 +82,15 @@ final class Database
 		return new User(
 			$row["id"],
 			new \DateTime($row["created"]),
-			$username,
+			$email,
 			$row["password"]
 		);
 	}
 
-	final public static function checkUser(string $username, string $passwordRaw): ?User
+	final public static function checkUser(string $email, string $passwordRaw): ?User
 	{
-		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE username = :username");
-		$stmt->execute(["username" => $username]);
+		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE email = :email");
+		$stmt->execute(["email" => $email]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)
 			return null;
@@ -102,20 +101,19 @@ final class Database
 		return new User(
 			$row["id"],
 			new \DateTime($row["created"]),
-			$username,
+			$email,
 			$row["password"],
 		);
 	}
 
-	final public static function registerUser(string $username, string $email, string $password): ?User
+	final public static function registerUser(string $email, string $password): ?User
 	{
 		try {
 			// Use RETURNING to get the inserted row in a single query (works on SQLite 3.35+)
 			$stmt = self::pdo()->prepare(
-				"INSERT INTO user (username, email, password) VALUES (:username, :email, :password) RETURNING id, created, password;"
+				"INSERT INTO user (email, password) VALUES (:email, :password) RETURNING id, created, password;"
 			);
 			$stmt->execute([
-				"username" => $username,
 				"email" => $email,
 				"password" => password_hash($password, PASSWORD_ARGON2ID),
 			]);
@@ -126,7 +124,7 @@ final class Database
 			return new User(
 				$row["id"],
 				new \DateTime($row["created"]),
-				$username,
+				$email,
 				$row["password"]
 			);
 		} catch (\PDOException $e) {

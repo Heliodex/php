@@ -11,17 +11,17 @@ final class LoggedInTest extends WebTestCase
 	private function logIn(KernelBrowser $client): void
 	{
 		// Create test user if it doesn't exist
-		$testUser = Database::checkUser("testuser", "testpassword");
+		$testUser = Database::checkUser("testuser@example.com", "testpassword");
 		if (!$testUser) {
-			Database::registerUser("testuser", "testuser@example.com", "testpassword");
+			Database::registerUser("testuser@example.com", "testpassword");
 			// Re-fetch to ensure we have a fresh instance
-			$testUser = Database::checkUser("testuser", "testpassword");
+			$testUser = Database::checkUser("testuser@example.com", "testpassword");
 		}
 
 		// find form and submit with test user credentials
 		$crawler = $client->request("GET", "/login");
 		$form = $crawler->selectButton("Log in")->form();
-		$form["login[username]"] = "testuser";
+		$form["login[email]"] = "testuser@example.com";
 		$form["login[password]"] = "testpassword";
 		$client->submit($form);
 		$client->followRedirect();

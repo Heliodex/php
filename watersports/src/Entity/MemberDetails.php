@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Form\Type\MemberCategory;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /*
@@ -41,5 +42,5 @@ class MemberDetails
 	final public string $postcode;
 
 	#[Assert\NotBlank]
-	final public string $memberCategory;
+	final public MemberCategory $memberCategory;
 }
