@@ -14,9 +14,9 @@ final class RegisterController extends Base
 	#[Route("/register", name: "register")]
 	final public function register(Request $request): Response
 	{
-		if ($request->getSession()->get("user"))
+		$user = $this->user($request);
+		if ($user)
 			return $this->redirectToRoute("home");
-
 
 		$register = new Register();
 		$form = $this->createForm(RegisterType::class, $register);
@@ -38,14 +38,14 @@ final class RegisterController extends Base
 				return $finish();
 			}
 
-			$newUser = Database::registerUser($email, $password);
-			if (!$newUser) {
+			$sess = Database::registerUser($email, $password);
+			if (!$sess) {
 				$form->addError(new FormError("Registration failed. An account may already be registered with this email address."));
 				return $finish();
 			}
 
 			$session = $request->getSession();
-			$session->set("user", $newUser);
+			$session->set("id", $sess);
 
 			// Redirect to home page after successful registration
 			return $this->redirectToRoute("home");

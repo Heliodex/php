@@ -11,7 +11,8 @@ final class HomeController extends Base
 	#[Route("/home", name: "home")]
 	final public function home(Request $request): Response
 	{
-		if (!$request->getSession()->get("user"))
+		$user = $this->user($request);
+		if (!$user)
 			return $this->redirectToRoute("login");
 
 		$number = Database::getRandomNumber();

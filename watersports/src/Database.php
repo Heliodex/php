@@ -9,9 +9,15 @@ final class Database
 	private static string $init = <<<SQL
 	CREATE TABLE IF NOT EXISTS user (
 		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-		created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
+	);
+	CREATE TABLE IF NOT EXISTS session (
+		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		userId VARCHAR(32) NOT NULL,
+		FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE
 	);
 	SQL;
 
@@ -71,10 +77,10 @@ final class Database
 		return (int) $row["number"];
 	}
 
-	final public static function getUserByEmai(string $email): ?User
+	final public static function getUserBySessionId(string $sess): ?User
 	{
-		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE email = :email");
-		$stmt->execute(["email" => $email]);
+		$stmt = self::pdo()->prepare("SELECT u.id, u.created, u.password, u.email FROM user u INNER JOIN session s ON u.id = s.userId WHERE s.id = :sess");
+		$stmt->execute(["sess" => $sess]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)
 			return null;
@@ -82,9 +88,23 @@ final class Database
 		return new User(
 			$row["id"],
 			new \DateTime($row["created"]),
-			$email,
+			$row["email"],
 			$row["password"]
 		);
+	}
+
+	final public static function createSession(string $userId): string
+	{
+		$stmt = self::pdo()->prepare("INSERT INTO session (userId) VALUES (:userId) RETURNING id");
+		$stmt->execute(["userId" => $userId]);
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+		return $row["id"];
+	}
+
+	final public static function invalidateSession(string $sessionId): void
+	{
+		$stmt = self::pdo()->prepare("DELETE FROM session WHERE id = :sessionId");
+		$stmt->execute(["sessionId" => $sessionId]);
 	}
 
 	final public static function checkUser(string $email, string $passwordRaw): ?User
@@ -106,7 +126,27 @@ final class Database
 		);
 	}
 
-	final public static function registerUser(string $email, string $password): ?User
+	final public static function logInUser(string $email, string $passwordRaw): ?string
+	{
+		try {
+			$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE email = :email");
+			$stmt->execute(["email" => $email]);
+
+			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+			if (!$row)
+				return null;
+
+			if (!password_verify($passwordRaw, $row["password"]))
+				return null;
+
+			return self::createSession($row["id"]);
+		} catch (\PDOException $e) {
+			Log::error("Database error during login: {$e->getMessage()}");
+			return null;
+		}
+	}
+
+	final public static function registerUser(string $email, string $passwordRaw): ?string
 	{
 		try {
 			// Use RETURNING to get the inserted row in a single query (works on SQLite 3.35+)
@@ -115,20 +155,15 @@ final class Database
 			);
 			$stmt->execute([
 				"email" => $email,
-				"password" => password_hash($password, PASSWORD_ARGON2ID),
+				"password" => password_hash($passwordRaw, PASSWORD_ARGON2ID),
 			]);
 			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 			if (!$row)
 				return null;
 
-			return new User(
-				$row["id"],
-				new \DateTime($row["created"]),
-				$email,
-				$row["password"]
-			);
+			return self::createSession($row["id"]);
 		} catch (\PDOException $e) {
-			Log::error("Database error during registration: " . $e->getMessage());
+			Log::error("Database error during registration: {$e->getMessage()}");
 			return null;
 		}
 	}

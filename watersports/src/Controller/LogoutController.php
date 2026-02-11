@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Database;
 use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -11,7 +12,9 @@ final class LogoutController extends Base
 	final public function logout(Request $request): Response
 	{
 		$session = $request->getSession();
-		$session->remove("user");
+		$sess = $session->remove("id");
+		if ($sess)
+			Database::invalidateSession($sess);
 
 		return $this->redirectToRoute("login");
 	}

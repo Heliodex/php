@@ -11,7 +11,8 @@ final class DefaultController extends Base
 	#[Route("/", name: "index")]
 	final public function index(Request $request): Response
 	{
-		if ($request->getSession()->get("user"))
+		$user = $this->user($request);
+		if ($user)
 			return $this->redirectToRoute("home");
 
 		$number = Database::getRandomNumber();
