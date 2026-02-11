@@ -1,56 +1,58 @@
-const nameCheck = /^[-_a-zA-Z0-9]{4,22}$/;
-const tokenCheck = /^[-_/+a-zA-Z0-9]{24,}$/;
+const nameCheck = /^[-_a-zA-Z0-9]{4,22}$/
+const tokenCheck = /^[-_/+a-zA-Z0-9]{24,}$/
 
 // Generate and double-submit a CSRF token in a form field and a cookie, as defined by Symfony's SameOriginCsrfTokenManager
 // Use `form.requestSubmit()` to ensure that the submit event is triggered. Using `form.submit()` will not trigger the event
 // and thus this event-listener will not be executed.
 document.addEventListener(
 	"submit",
-	function (event) {
-		generateCsrfToken(event.target);
+	(event) => {
+		generateCsrfToken(event.target)
 	},
-	true,
-);
+	true
+)
 
 // When @hotwired/turbo handles form submissions, send the CSRF token in a header in addition to a cookie
 // The `framework.csrf_protection.check_header` config option needs to be enabled for the header to be checked
-document.addEventListener("turbo:submit-start", function (event) {
-	const h = generateCsrfHeaders(event.detail.formSubmission.formElement);
-	Object.keys(h).map(function (k) {
-		event.detail.formSubmission.fetchRequest.headers[k] = h[k];
-	});
-});
+document.addEventListener("turbo:submit-start", (event) => {
+	const h = generateCsrfHeaders(event.detail.formSubmission.formElement)
+	Object.keys(h).map((k) => {
+		event.detail.formSubmission.fetchRequest.headers[k] = h[k]
+	})
+})
 
 // When @hotwired/turbo handles form submissions, remove the CSRF cookie once a form has been submitted
-document.addEventListener("turbo:submit-end", function (event) {
-	removeCsrfToken(event.detail.formSubmission.formElement);
-});
+document.addEventListener("turbo:submit-end", (event) => {
+	removeCsrfToken(event.detail.formSubmission.formElement)
+})
 
 export function generateCsrfToken(formElement) {
 	const csrfField = formElement.querySelector(
-		'input[data-controller="csrf-protection"], input[name="_csrf_token"]',
-	);
+		'input[data-controller="csrf-protection"], input[name="_csrf_token"]'
+	)
 
 	if (!csrfField) {
-		return;
+		return
 	}
 
-	let csrfCookie = csrfField.getAttribute("data-csrf-protection-cookie-value");
-	let csrfToken = csrfField.value;
+	let csrfCookie = csrfField.getAttribute("data-csrf-protection-cookie-value")
+	let csrfToken = csrfField.value
 
 	if (!csrfCookie && nameCheck.test(csrfToken)) {
 		csrfField.setAttribute(
 			"data-csrf-protection-cookie-value",
-			(csrfCookie = csrfToken),
-		);
+			(csrfCookie = csrfToken)
+		)
 		csrfField.defaultValue = csrfToken = btoa(
 			String.fromCharCode.apply(
 				null,
-				(window.crypto || window.msCrypto).getRandomValues(new Uint8Array(18)),
-			),
-		);
+				(window.crypto || window.msCrypto).getRandomValues(
+					new Uint8Array(18)
+				)
+			)
+		)
 	}
-	csrfField.dispatchEvent(new Event("change", { bubbles: true }));
+	csrfField.dispatchEvent(new Event("change", { bubbles: true }))
 
 	if (csrfCookie && tokenCheck.test(csrfToken)) {
 		const cookie =
@@ -59,61 +61,61 @@ export function generateCsrfToken(formElement) {
 			csrfToken +
 			"=" +
 			csrfCookie +
-			"; path=/; samesite=strict";
+			"; path=/; samesite=strict"
 		document.cookie =
 			window.location.protocol === "https:"
-				? "__Host-" + cookie + "; secure"
-				: cookie;
+				? `__Host-${cookie}; secure`
+				: cookie
 	}
 }
 
 export function generateCsrfHeaders(formElement) {
-	const headers = {};
+	const headers = {}
 	const csrfField = formElement.querySelector(
-		'input[data-controller="csrf-protection"], input[name="_csrf_token"]',
-	);
+		'input[data-controller="csrf-protection"], input[name="_csrf_token"]'
+	)
 
 	if (!csrfField) {
-		return headers;
+		return headers
 	}
 
 	const csrfCookie = csrfField.getAttribute(
-		"data-csrf-protection-cookie-value",
-	);
+		"data-csrf-protection-cookie-value"
+	)
 
 	if (tokenCheck.test(csrfField.value) && nameCheck.test(csrfCookie)) {
-		headers[csrfCookie] = csrfField.value;
+		headers[csrfCookie] = csrfField.value
 	}
 
-	return headers;
+	return headers
 }
 
 export function removeCsrfToken(formElement) {
 	const csrfField = formElement.querySelector(
-		'input[data-controller="csrf-protection"], input[name="_csrf_token"]',
-	);
+		'input[data-controller="csrf-protection"], input[name="_csrf_token"]'
+	)
 
 	if (!csrfField) {
-		return;
+		return
 	}
 
 	const csrfCookie = csrfField.getAttribute(
-		"data-csrf-protection-cookie-value",
-	);
+		"data-csrf-protection-cookie-value"
+	)
 
 	if (tokenCheck.test(csrfField.value) && nameCheck.test(csrfCookie)) {
 		const cookie =
 			csrfCookie +
 			"_" +
 			csrfField.value +
-			"=0; path=/; samesite=strict; max-age=0";
+			"=0; path=/; samesite=strict; max-age=0"
 
 		document.cookie =
 			window.location.protocol === "https:"
-				? "__Host-" + cookie + "; secure"
-				: cookie;
+				? `__Host-${cookie}; secure`
+				: cookie
 	}
 }
 
 /* stimulusFetch: 'lazy' */
-export default "csrf-protection-controller";
+export default "csrf-protection-controller"
