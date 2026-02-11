@@ -19,6 +19,22 @@ final class Database
 		userId VARCHAR(32) NOT NULL,
 		FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE
 	);
+	CREATE TABLE IF NOT EXISTS product (
+		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		name TEXT NOT NULL,
+		description TEXT,
+		price INTEGER NOT NULL -- as pence
+	);
+	CREATE TABLE IF NOT EXISTS purchase (
+		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		userId VARCHAR(32) NOT NULL,
+		productId VARCHAR(32) NOT NULL,
+		completed BOOLEAN NOT NULL DEFAULT 0 CHECK (completed IN (0, 1)),
+		FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
+		FOREIGN KEY (productId) REFERENCES product(id) ON DELETE CASCADE
+	);
 	SQL;
 
 	// get path from environment variable
