@@ -2,6 +2,7 @@
     <ul>
 		{% if user %}
 			<li><a href="{{ path('home') }}">Home</a></li>
+			<li><a href="{{ path('cart') }}">Cart</a></li>
 			<li>
 				Email: {{ user.email }}
 			</li>
