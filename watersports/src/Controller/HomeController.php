@@ -15,12 +15,19 @@ final class HomeController extends Base
 		if (!$user)
 			return $this->redirectToRoute("login");
 
+		if ($request->isMethod("POST")) {
+			// get param
+			$productId = $request->request->get("productId");
+			$addOrRemove = $request->request->get("action");
+			Database::changeCart($user->id, $productId, $addOrRemove === "add");
+		}
+
 		$number = Database::getRandomNumber();
-		$products = Database::getProducts();
+		$products = Database::getProducts($user->id);
 
 		return $this->finish($request, "home.html.twig", [
 			"number" => $number,
-			"products"=> $products,
+			"products" => $products,
 		]);
 	}
 }

@@ -225,20 +225,14 @@ footer {
 }
 
 .product {
-	transition:
-		0.2s background,
-		0.2s color;
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4);
 
-	display: block;
 	color: inherit;
 	background: var(--gray-9);
 	padding: var(--size-3);
 	border-radius: var(--size-2);
-
-	&:hover {
-		color: var(--gray-3);
-		background: var(--gray-8);
-	}
 
 	h2 {
 		font-weight: 250;

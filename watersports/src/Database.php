@@ -190,11 +190,16 @@ final class Database
 		}
 	}
 
-	final public static function getProducts(): array
+	final public static function getProducts(string $userId): array
 	{
 		try {
-			$stmt = self::pdo()->prepare("SELECT id, created, name, description, price FROM product");
-			$stmt->execute();
+			$stmt = self::pdo()->prepare(
+				"SELECT
+					p.id, p.created, p.name, p.description, p.price,
+					EXISTS (SELECT 1 FROM purchase WHERE userId = :userid AND productId = p.id AND completed = false) AS inCart
+				FROM product p"
+			);
+			$stmt->execute(["userid" => $userId]);
 			$products = [];
 			while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 				$products[] = new Product(
@@ -202,13 +207,30 @@ final class Database
 					new \DateTime($row["created"]),
 					$row["name"],
 					$row["description"],
-					$row["price"]
+					$row["price"],
+					$row["inCart"],
 				);
 			}
 			return $products;
 		} catch (\PDOException $e) {
 			Log::error("Database error during product retrieval: {$e->getMessage()}");
 			return [];
+		}
+	}
+
+	final public static function changeCart(string $userId, string $productId, bool $add): void
+	{
+		try {
+			$stmt = self::pdo()->prepare(
+				$add ? "INSERT INTO purchase (userId, productId) VALUES (:userId, :productId)"
+				: "DELETE FROM purchase WHERE userId = :userId AND productId = :productId AND completed = 0"
+			);
+			$stmt->execute([
+				"userId" => $userId,
+				"productId" => $productId,
+			]);
+		} catch (\PDOException $e) {
+			Log::error("Database error during cart change: {$e->getMessage()}");
 		}
 	}
 }

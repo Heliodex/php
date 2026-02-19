@@ -5,15 +5,29 @@
 {% endblock %}
 
 {% block main %}
-	<h1>Home</h1>
+    <h1>Home</h1>
 
     <h1>Your lucky number is {{ number }}</h1>
 
-	{% for product in products %}
-		<a class="product" href="#">
-			<h2>{{ product.name }}</h2>
-			<p>{{ product.description }}</p>
-			<span class="price">Price: {{ product.price }}</span>
-		</div>
-	{% endfor %}
+    {% for product in products %}
+        <article class="product">
+            <div class="info">
+                <h2>{{ product.name }}</h2>
+                <p>{{ product.description }}</p>
+                <data class="price" value="{{ product.price }}">Price: £{{ product.price / 100 }}</data>
+            </div>
+
+            <form method="post">
+                <input type="hidden" name="productId" value="{{ product.id }}">
+
+                {% if product.inCart %}
+                    <input type="hidden" name="action" value="remove">
+                    <button type="submit">Remove from cart</button>
+                {% else %}
+                    <input type="hidden" name="action" value="add">
+                    <button type="submit">Add to cart</button>
+                {% endif %}
+            </form>
+        </article>
+    {% endfor %}
 {% endblock %}
