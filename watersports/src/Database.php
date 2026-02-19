@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Entity\User;
+use App\Entity\{Product, User};
 
 final class Database
 {
@@ -26,6 +26,12 @@ final class Database
 		description TEXT,
 		price INTEGER NOT NULL -- as pence
 	);
+
+	-- insert sample products if not exists
+	INSERT INTO product (name, description, price)
+	SELECT 'Product 1', 'A sample product description', 19999
+	WHERE NOT EXISTS (SELECT 1 FROM product WHERE name = 'Product 1');
+
 	CREATE TABLE IF NOT EXISTS purchase (
 		id VARCHAR(32) PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
 		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -181,6 +187,28 @@ final class Database
 		} catch (\PDOException $e) {
 			Log::error("Database error during registration: {$e->getMessage()}");
 			return null;
+		}
+	}
+
+	final public static function getProducts(): array
+	{
+		try {
+			$stmt = self::pdo()->prepare("SELECT id, created, name, description, price FROM product");
+			$stmt->execute();
+			$products = [];
+			while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+				$products[] = new Product(
+					$row["id"],
+					new \DateTime($row["created"]),
+					$row["name"],
+					$row["description"],
+					$row["price"]
+				);
+			}
+			return $products;
+		} catch (\PDOException $e) {
+			Log::error("Database error during product retrieval: {$e->getMessage()}");
+			return [];
 		}
 	}
 }

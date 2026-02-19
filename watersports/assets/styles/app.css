@@ -223,3 +223,29 @@ table {
 footer {
 	padding-top: var(--size-7);
 }
+
+.product {
+	transition:
+		0.2s background,
+		0.2s color;
+
+	display: block;
+	color: inherit;
+	background: var(--gray-9);
+	padding: var(--size-3);
+	border-radius: var(--size-2);
+
+	&:hover {
+		color: var(--gray-3);
+		background: var(--gray-8);
+	}
+
+	h2 {
+		font-weight: 250;
+		padding-bottom: 0;
+	}
+
+	& .price {
+		font-weight: 500;
+	} 
+}

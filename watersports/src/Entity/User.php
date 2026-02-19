@@ -8,6 +8,7 @@ readonly final class User
 {
 	final public string $id;
 	final public DateTime $created;
+	private DateTime $createdAt; // must exist
 	final public string $email;
 	final public string $password;
 

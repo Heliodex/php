@@ -16,9 +16,11 @@ final class HomeController extends Base
 			return $this->redirectToRoute("login");
 
 		$number = Database::getRandomNumber();
+		$products = Database::getProducts();
 
 		return $this->finish($request, "home.html.twig", [
 			"number" => $number,
+			"products"=> $products,
 		]);
 	}
 }

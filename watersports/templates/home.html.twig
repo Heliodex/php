@@ -8,4 +8,12 @@
 	<h1>Home</h1>
 
     <h1>Your lucky number is {{ number }}</h1>
+
+	{% for product in products %}
+		<a class="product" href="#">
+			<h2>{{ product.name }}</h2>
+			<p>{{ product.description }}</p>
+			<span class="price">Price: {{ product.price }}</span>
+		</div>
+	{% endfor %}
 {% endblock %}
