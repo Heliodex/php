@@ -15,10 +15,15 @@ final class CartController extends Base
 		if (!$user)
 			return $this->redirectToRoute("login");
 
-		$number = Database::getRandomNumber();
+		if ($request->isMethod("POST")) {
+			$productId = $request->request->get("productId");
+			Database::changeCart($user->id, $productId, false);
+		}
+
+		$cart = Database::getCart($user->id);
 
 		return $this->finish($request, "cart.html.twig", [
-			"number" => $number,
+			"cart" => $cart,
 		]);
 	}
 }

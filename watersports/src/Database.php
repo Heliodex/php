@@ -218,6 +218,34 @@ final class Database
 		}
 	}
 
+	final public static function getCart(string $userId): array
+	{
+		try {
+			$stmt = self::pdo()->prepare(
+				"SELECT p.id, p.created, p.name, p.description, p.price
+				FROM product p
+				INNER JOIN purchase pu ON p.id = pu.productId
+				WHERE pu.userId = :userid AND pu.completed = false"
+			);
+			$stmt->execute(["userid" => $userId]);
+			$products = [];
+			while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+				$products[] = new Product(
+					$row["id"],
+					new \DateTime($row["created"]),
+					$row["name"],
+					$row["description"],
+					$row["price"],
+					true,
+				);
+			}
+			return $products;
+		} catch (\PDOException $e) {
+			Log::error("Database error during cart retrieval: {$e->getMessage()}");
+			return [];
+		}
+	}
+
 	final public static function changeCart(string $userId, string $productId, bool $add): void
 	{
 		try {

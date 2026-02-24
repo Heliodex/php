@@ -22,11 +22,9 @@ final class HomeController extends Base
 			Database::changeCart($user->id, $productId, $addOrRemove === "add");
 		}
 
-		$number = Database::getRandomNumber();
 		$products = Database::getProducts($user->id);
 
 		return $this->finish($request, "home.html.twig", [
-			"number" => $number,
 			"products" => $products,
 		]);
 	}
