@@ -190,6 +190,21 @@ final class Database
 		}
 	}
 
+	final public static function updatePassword(string $userId, string $newPasswordRaw): bool
+	{
+		try {
+			$stmt = self::pdo()->prepare("UPDATE user SET password = :password WHERE id = :userId");
+			$stmt->execute([
+				"userId" => $userId,
+				"password" => password_hash($newPasswordRaw, PASSWORD_ARGON2ID),
+			]);
+			return true;
+		} catch (\PDOException $e) {
+			Log::error("Database error during password update: {$e->getMessage()}");
+			return false;
+		}
+	}
+
 	final public static function getProducts(string $userId): array
 	{
 		try {
