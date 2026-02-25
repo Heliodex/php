@@ -20,7 +20,7 @@ p {
 }
 
 :root {
-	background: var(--gray-10);
+	background: var(--gray-11);
 }
 
 body {
@@ -83,6 +83,18 @@ button {
 	margin: 0 !important;
 }
 
+button:not(form button) {
+	transition: background 0.2s;
+
+	&:hover {
+		background: var(--gray-8);
+	}
+
+	&:active {
+		background: var(--gray-9);
+	}
+}
+
 .smallbtn {
 	max-width: fit-content;
 }
@@ -142,14 +154,6 @@ a {
 	&:hover {
 		color: var(--blue-7);
 	}
-}
-
-nav ul {
-	padding: 0;
-	list-style: none;
-	display: flex;
-	align-items: center;
-	gap: var(--size-3);
 }
 
 header {
@@ -241,5 +245,62 @@ footer {
 
 	& .price {
 		font-weight: 500;
-	} 
+	}
+}
+
+/* navigation */
+
+nav ul,
+#mobiletop {
+	padding: 0;
+	display: flex;
+	align-items: center;
+	gap: var(--size-3);
+}
+
+nav ul {
+	list-style: none;
+}
+
+#desktopnav {
+	display: none;
+}
+
+#mobilenavbutton {
+	anchor-name: --nav;
+}
+
+#mobilenav {
+	position: absolute;
+	position-area: bottom span-right;
+	position-anchor: --nav;
+	background: none;
+	padding: 0;
+	padding-top: var(--size-2);
+
+	nav {
+		background: var(--gray-8);
+		padding: var(--size-3);
+		border-radius: var(--size-2);
+		box-shadow: var(--shadow-4);
+
+		ul {
+			padding-left: 0;
+			flex-direction: column;
+
+			li {
+				width: 100%;
+			}
+		}
+	}
+}
+
+@media (width >= 600px) {
+	#desktopnav {
+		display: block;
+	}
+
+	#mobiletop, #mobilenav {
+		display: none;
+	}
 }
