@@ -289,27 +289,11 @@ final class Database
 		}
 	}
 
-	final public static function setCartQuantity(string $userId, string $productId, bool $increase): void
+	final public static function setCartQuantity(string $userId, string $productId, int $qty): void
 	{
-		// increase by 1 if $increase, otherwise decrease
-		// and if decreasing, delete the `purchase` row if quantity is 1
+		// sending quantity directly removes 1 database query compared to querying for the quantity
 
 		try {
-			$stmt = self::pdo()->prepare(
-				"SELECT quantity FROM purchase WHERE userId = :userId AND productId = :productId AND completed = 0"
-			);
-
-			$stmt->execute([
-				"userId" => $userId,
-				"productId" => $productId,
-			]);
-
-			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
-			if (!$row)
-				return;
-
-			$qty = $row["quantity"] + ($increase ? 1 : -1);
-
 			if ($qty < 1) {
 				self::changeCart($userId, $productId, false);
 				return;

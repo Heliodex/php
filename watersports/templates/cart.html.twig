@@ -15,12 +15,12 @@
                 <data class="price" value="{{ product.price }}">Price: £{{ product.price / 100 }}</data>
             </div>
 
-			{# TODO: better user experience with a custom 'quantity' field and an 'Update" button? #}
+            {# TODO: better user experience with a custom 'quantity' field and an 'Update" button? #}
             <form method="post" class="qty">
-                <button type="submit" name="action" value="-">-</button>
+                <button type="submit" name="set" value="{{ product.quantity - 1 }}">-</button>
                 <input type="hidden" name="productId" value="{{ product.id }}">
                 {{ product.quantity }}
-                <button type="submit" name="action" value="+">+</button>
+                <button type="submit" name="set" value="{{ product.quantity + 1 }}">+</button>
             </form>
         </article>
     {% endfor %}

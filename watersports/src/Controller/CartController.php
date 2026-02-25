@@ -17,12 +17,9 @@ final class CartController extends Base
 
 		if ($request->isMethod("POST")) {
 			$productId = $request->request->get("productId");
-			$action = $request->request->get("action");
+			$qty = $request->request->get("set");
 
-			if ($action === "+")
-				Database::setCartQuantity($user->id, $productId, true);
-			else if ($action === "-")
-				Database::setCartQuantity($user->id, $productId, false);
+			Database::setCartQuantity($user->id, $productId, $qty);
 		}
 
 		$cart = Database::getCart($user->id);
