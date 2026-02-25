@@ -23,6 +23,10 @@
                 <button type="submit" name="set" value="{{ product.quantity + 1 }}">+</button>
             </form>
         </article>
+
+		<hr>
+
+        <p>Total: £{{ (product.price * product.quantity) / 100 }}</p>
     {% endfor %}
 
     {% if cart|length == 0 %}

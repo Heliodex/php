@@ -24,8 +24,13 @@ final class CartController extends Base
 
 		$cart = Database::getCart($user->id);
 
+		$total = 0;
+		foreach ($cart as $item)
+			$total += $item->price * $item->quantity;
+
 		return $this->finish($request, "cart.html.twig", [
 			"cart" => $cart,
+			"total" => $total,
 		]);
 	}
 }
