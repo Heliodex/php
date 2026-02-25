@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class LoginController extends Base
 {
-	#[Route("/login", methods: ["GET", "POST"], name: "login")]
+	#[Route("/login", methods: ["GET", "POST"], name: "login", options: ["sitemap" => true])]
 	final public function login(Request $request): Response
 	{
 		$user = $this->user($request);

@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends Base
 {
-	#[Route("/home", name: "home")]
+	#[Route("/home", name: "home", options: ["sitemap" => true])]
 	final public function home(Request $request): Response
 	{
 		$user = $this->user($request);

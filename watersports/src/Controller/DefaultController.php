@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DefaultController extends Base
 {
-	#[Route("/", name: "index")]
+	#[Route("/", name: "index", options: ["sitemap" => true])]
 	final public function index(Request $request): Response
 	{
 		$user = $this->user($request);

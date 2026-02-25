@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class LogoutController extends Base
 {
-	#[Route("/logout", methods: ["POST"], name: "logout")]
+	#[Route("/logout", methods: ["POST"], name: "logout", options: ["sitemap" => true])]
 	final public function logout(Request $request): Response
 	{
 		$session = $request->getSession();

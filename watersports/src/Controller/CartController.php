@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CartController extends Base
 {
-	#[Route("/cart", name: "cart")]
+	#[Route("/cart", name: "cart", options: ["sitemap" => true])]
 	final public function home(Request $request): Response
 	{
 		$user = $this->user($request);

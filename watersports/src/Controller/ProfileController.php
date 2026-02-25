@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ProfileController extends Base
 {
-	#[Route("/profile", name: "profile")]
+	#[Route("/profile", name: "profile", options: ["sitemap" => true])]
 	final public function home(Request $request): Response
 	{
 		$user = $this->user($request);

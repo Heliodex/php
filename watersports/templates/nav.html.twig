@@ -21,10 +21,13 @@
 
 <div id="mobiletop">
     <button id="mobilenavbutton" popovertarget="mobilenav">Menu</button>
-    <span>
-        Email:
-        {{ user.email }}
-    </span>
+
+    {% if user %}
+        <span>
+            Email:
+            {{ user.email }}
+        </span>
+    {% endif %}
 </div>
 
 <div popover id="mobilenav">

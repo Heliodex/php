@@ -1,0 +1,6 @@
+presta_sitemap:
+    default_section: default
+    defaults:
+        priority: null
+        changefreq: null
+        lastmod: null
