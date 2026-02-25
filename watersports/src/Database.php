@@ -37,6 +37,7 @@ final class Database
 		created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		userId VARCHAR(32) NOT NULL,
 		productId VARCHAR(32) NOT NULL,
+		quantity INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
 		completed BOOLEAN NOT NULL DEFAULT 0 CHECK (completed IN (0, 1)),
 		FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
 		FOREIGN KEY (productId) REFERENCES product(id) ON DELETE CASCADE
@@ -232,6 +233,7 @@ final class Database
 					$row["name"],
 					$row["description"],
 					$row["price"],
+					0,
 					$row["inCart"],
 				);
 			}
@@ -246,7 +248,7 @@ final class Database
 	{
 		try {
 			$stmt = self::pdo()->prepare(
-				"SELECT p.id, p.created, p.name, p.description, p.price
+				"SELECT p.id, p.created, p.name, p.description, p.price, pu.quantity
 				FROM product p
 				INNER JOIN purchase pu ON p.id = pu.productId
 				WHERE pu.userId = :userid AND pu.completed = false"
@@ -260,6 +262,7 @@ final class Database
 					$row["name"],
 					$row["description"],
 					$row["price"],
+					$row["quantity"],
 					true,
 				);
 			}
@@ -283,6 +286,43 @@ final class Database
 			]);
 		} catch (\PDOException $e) {
 			Log::error("Database error during cart change: {$e->getMessage()}");
+		}
+	}
+
+	final public static function setCartQuantity(string $userId, string $productId, bool $increase): void
+	{
+		// increase by 1 if $increase, otherwise decrease
+		// and if decreasing, delete the `purchase` row if quantity is 1
+
+		try {
+			$stmt = self::pdo()->prepare(
+				"SELECT quantity FROM purchase WHERE userId = :userId AND productId = :productId AND completed = 0"
+			);
+
+			$stmt->execute([
+				"userId" => $userId,
+				"productId" => $productId,
+			]);
+
+			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+			if (!$row)
+				return;
+
+			$qty = $row["quantity"] + ($increase ? 1 : -1);
+
+			if ($qty < 1) {
+				self::changeCart($userId, $productId, false);
+				return;
+			}
+
+			$stmt = self::pdo()->prepare("UPDATE purchase SET quantity = :qty WHERE userId = :userId AND productId = :productId AND completed = 0");
+			$stmt->execute([
+				"qty" => $qty,
+				"userId" => $userId,
+				"productId" => $productId,
+			]);
+		} catch (\PDOException $e) {
+			Log::error("Database error during cart quantity change: {$e->getMessage()}");
 		}
 	}
 }

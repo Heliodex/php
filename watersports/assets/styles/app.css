@@ -95,6 +95,19 @@ button:not(form button) {
 	}
 }
 
+.qty {
+	display: flex;
+	align-items: center;
+	height: fit-content;
+	gap: var(--size-3);
+
+	button {
+		padding: var(--size-1);
+		width: var(--size-7);
+		height: var(--size-7);
+	}
+}
+
 .smallbtn {
 	max-width: fit-content;
 }
@@ -300,7 +313,8 @@ nav ul {
 		display: block;
 	}
 
-	#mobiletop, #mobilenav {
+	#mobiletop,
+	#mobilenav {
 		display: none;
 	}
 }

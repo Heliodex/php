@@ -15,14 +15,17 @@
                 <data class="price" value="{{ product.price }}">Price: £{{ product.price / 100 }}</data>
             </div>
 
-            <form method="post">
+			{# TODO: better user experience with a custom 'quantity' field and an 'Update" button? #}
+            <form method="post" class="qty">
+                <button type="submit" name="action" value="-">-</button>
                 <input type="hidden" name="productId" value="{{ product.id }}">
-                <button type="submit">Remove from cart</button>
+                {{ product.quantity }}
+                <button type="submit" name="action" value="+">+</button>
             </form>
         </article>
     {% endfor %}
 
-	{% if cart|length == 0 %}
-		<p>Your cart is empty.</p>
-	{% endif %}
+    {% if cart|length == 0 %}
+        <p>Your cart is empty.</p>
+    {% endif %}
 {% endblock %}
