@@ -11,12 +11,14 @@ readonly final class User
 	private DateTime $createdAt; // must exist
 	final public string $email;
 	final public string $password;
+	final public ?int $cartSize;
 
-	final public function __construct(string $id, DateTime $created, string $email, string $password)
+	final public function __construct(string $id, DateTime $created, string $email, string $password, ?int $cartSize = null)
 	{
 		$this->id = $id;
 		$this->created = $created;
 		$this->email = $email;
 		$this->password = $password;
+		$this->cartSize = $cartSize;
 	}
 }

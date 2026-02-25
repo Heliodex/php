@@ -1,20 +1,14 @@
+{% from "navComponents.html.twig" import navLoggedIn, navEmail, navLoggedOut, navLogout %}
+
+
 <nav id="desktopnav">
     <ul>
         {% if user %}
-            <li><a href="{{ path('home') }}">Home</a></li>
-            <li><a href="{{ path('cart') }}">Cart</a></li>
-            <li><a href="{{ path('profile') }}">Profile</a></li>
-            <li>
-                Email:
-                {{ user.email }}
-            </li>
-            <form method="post" action="{{ path('logout') }}" class="inline-form">
-                <button>Log out</button>
-            </form>
+            {{ navLoggedIn(user) }}
+            <li>{{ navEmail(user) }}</li>
+            {{ navLogout() }}
         {% else %}
-            <li><a href="{{ path('index') }}">Watersports</a></li>
-            <li><a href="{{ path('login') }}">Login</a></li>
-            <li><a href="{{ path('register') }}">Register</a></li>
+            {{ navLoggedOut() }}
         {% endif %}
     </ul>
 </nav>
@@ -23,10 +17,7 @@
     <button id="mobilenavbutton" popovertarget="mobilenav">Menu</button>
 
     {% if user %}
-        <span>
-            Email:
-            {{ user.email }}
-        </span>
+        {{ navEmail(user) }}
     {% endif %}
 </div>
 
@@ -34,16 +25,10 @@
     <nav>
         <ul>
             {% if user %}
-                <li><a href="{{ path('home') }}">Home</a></li>
-                <li><a href="{{ path('cart') }}">Cart</a></li>
-                <li><a href="{{ path('profile') }}">Profile</a></li>
-                <form method="post" action="{{ path('logout') }}" class="inline-form">
-                    <button>Log out</button>
-                </form>
+                {{ navLoggedIn(user) }}
+                {{ navLogout() }}
             {% else %}
-                <li><a href="{{ path('index') }}">Watersports</a></li>
-                <li><a href="{{ path('login') }}">Login</a></li>
-                <li><a href="{{ path('register') }}">Register</a></li>
+                {{ navLoggedOut() }}
             {% endif %}
         </ul>
     </nav>

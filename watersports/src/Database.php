@@ -101,7 +101,13 @@ final class Database
 
 	final public static function getUserBySessionId(string $sess): ?User
 	{
-		$stmt = self::pdo()->prepare("SELECT u.id, u.created, u.password, u.email FROM user u INNER JOIN session s ON u.id = s.userId WHERE s.id = :sess");
+		$stmt = self::pdo()->prepare(
+			"SELECT
+				u.id, u.created, u.password, u.email,
+				 (SELECT COUNT(*) FROM purchase pu WHERE pu.userId = u.id AND pu.completed = 0) AS cartSize	
+			FROM user u
+			INNER JOIN session s ON u.id = s.userId WHERE s.id = :sess"
+		);
 		$stmt->execute(["sess" => $sess]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)
@@ -111,7 +117,8 @@ final class Database
 			$row["id"],
 			new \DateTime($row["created"]),
 			$row["email"],
-			$row["password"]
+			$row["password"],
+			$row["cartSize"],
 		);
 	}
 
@@ -131,7 +138,8 @@ final class Database
 
 	final public static function checkUser(string $email, string $passwordRaw): ?User
 	{
-		$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE email = :email");
+		$stmt = self::pdo()->prepare(
+			"SELECT id, created, password,FROM user WHERE email = :email");
 		$stmt->execute(["email" => $email]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)

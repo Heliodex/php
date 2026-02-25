@@ -1,0 +1,27 @@
+{% macro navLoggedIn(user) %}
+    <li><a href="{{ path('home') }}">Home</a></li>
+    <li><a href="{{ path('cart') }}">
+        Cart
+        {% if user.cartSize > 0 %}
+            {{ "(#{user.cartSize})" }}
+        {% endif %}
+    </a></li>
+    <li><a href="{{ path('profile') }}">Profile</a></li>
+{% endmacro %}
+
+{% macro navEmail(user) %}
+    Email:
+    {{ user.email }}
+{% endmacro %}
+
+{% macro navLoggedOut() %}
+    <li><a href="{{ path('index') }}">Watersports</a></li>
+    <li><a href="{{ path('login') }}">Login</a></li>
+    <li><a href="{{ path('register') }}">Register</a></li>
+{% endmacro %}
+
+{% macro navLogout() %}
+    <form method="post" action="{{ path('logout') }}" class="inline-form">
+        <button>Log out</button>
+    </form>
+{% endmacro %}
