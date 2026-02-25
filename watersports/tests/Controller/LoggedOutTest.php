@@ -36,6 +36,24 @@ final class LoggedOutTest extends WebTestCase
 		$this->assertResponseIsSuccessful();
 	}
 
+	final public function testCart(): void
+	{
+		$client = self::createClient();
+		$client->request("GET", "/cart");
+		$this->assertResponseRedirects("/login");
+		$client->followRedirect();
+		$this->assertResponseIsSuccessful();
+	}
+
+	final public function testProfile(): void
+	{
+		$client = self::createClient();
+		$client->request("GET", "/profile");
+		$this->assertResponseRedirects("/login");
+		$client->followRedirect();
+		$this->assertResponseIsSuccessful();
+	}
+
 	final public function testLogout(): void
 	{
 		$client = self::createClient();

@@ -139,7 +139,8 @@ final class Database
 	final public static function checkUser(string $email, string $passwordRaw): ?User
 	{
 		$stmt = self::pdo()->prepare(
-			"SELECT id, created, password,FROM user WHERE email = :email");
+			"SELECT id, created, password FROM user WHERE email = :email"
+		);
 		$stmt->execute(["email" => $email]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)

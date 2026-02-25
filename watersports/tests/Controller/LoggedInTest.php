@@ -70,6 +70,22 @@ final class LoggedInTest extends WebTestCase
 		$this->assertResponseIsSuccessful();
 	}
 
+	public function testCart(): void
+	{
+		$client = self::createClient();
+		$this->logIn($client);
+		$client->request("GET", "/cart");
+		$this->assertResponseIsSuccessful();
+	}
+
+	public function testProfile(): void
+	{
+		$client = self::createClient();
+		$this->logIn($client);
+		$client->request("GET", "/profile");
+		$this->assertResponseIsSuccessful();
+	}
+
 	public function testLogout(): void
 	{
 		$client = self::createClient();
