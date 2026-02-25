@@ -99,9 +99,8 @@ final class Database
 
 	final public static function checkUser(string $email, string $passwordRaw): ?User
 	{
-		$stmt = self::pdo()->prepare(
-			"SELECT id, created, password FROM user WHERE email = ?"
-		);
+		$getUserByEmailQuery = file_get_contents(__DIR__ . "/getUserByEmail.sql");
+		$stmt = self::pdo()->prepare($getUserByEmailQuery);
 		$stmt->execute([$email]);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 		if (!$row)
@@ -121,7 +120,8 @@ final class Database
 	final public static function logInUser(string $email, string $passwordRaw): ?string
 	{
 		try {
-			$stmt = self::pdo()->prepare("SELECT id, created, password FROM user WHERE email = ?");
+			$getUserByEmailQuery = file_get_contents(__DIR__ . "/getUserByEmail.sql");
+			$stmt = self::pdo()->prepare($getUserByEmailQuery);
 			$stmt->execute([$email]);
 
 			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -141,13 +141,13 @@ final class Database
 	final public static function registerUser(string $email, string $passwordRaw): ?string
 	{
 		try {
-			// Use RETURNING to get the inserted row in a single query (works on SQLite 3.35+)
+			$registerUserQuery = file_get_contents(__DIR__ . "/registerUser.sql");
 			$stmt = self::pdo()->prepare(
-				"INSERT INTO user (email, password) VALUES (:email, :password) RETURNING id, created, password;"
+				$registerUserQuery
 			);
 			$stmt->execute([
-				"email" => $email,
-				"password" => password_hash($passwordRaw, PASSWORD_ARGON2ID),
+				$email,
+				password_hash($passwordRaw, PASSWORD_ARGON2ID),
 			]);
 			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 			if (!$row)
